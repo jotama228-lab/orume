@@ -1,14 +1,32 @@
+<?php
+/**
+ * ============================================
+ * PAGE D'ACCUEIL - FRONTEND PUBLIC
+ * ============================================
+ * 
+ * Cette page est la page principale du site vitrine Orüme.
+ * Elle présente l'agence, ses services, ses partenaires et
+ * un aperçu du portfolio.
+ * 
+ * @package Orüme
+ * @version 1.0.0
+ */
+
+// Charger le bootstrap de l'application (optionnel pour cette page statique)
+// Désactivé pour éviter les erreurs sur cette page statique
+// if (file_exists(__DIR__ . '/bootstrap.php')) {
+//     require_once __DIR__ . '/bootstrap.php';
+// }
+?>
 <!DOCTYPE html>
 <html lang="fr">
-  <?php
-      include'partials/head.php'
-  ?>
+<?php include 'partials/head.php'; ?>
 
-    <!-- HERO CONTENT avec seulement une image -->
-    <div class="hero-content">
-      <img src="assets/img/background.png" alt="Orüme Hero" class="hero-img">
-    </div>
-  </header>
+<!-- HERO CONTENT avec seulement une image -->
+<div class="hero-content">
+    <img src="assets/img/background.png" alt="Orüme Hero" class="hero-img">
+</div>
+</header>
    <br>
    
   <section class="about">

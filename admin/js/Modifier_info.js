@@ -1,19 +1,41 @@
-// --------------- MODIFIER UN PORTFOLIO ---------------
+/**
+ * ============================================
+ * GESTION DE LA MODIFICATION D'UN PORTFOLIO
+ * ============================================
+ * 
+ * Ce script gère la modification d'un élément du portfolio
+ * depuis l'interface d'administration. Il permet d'ouvrir un modal,
+ * pré-remplir les champs avec les données existantes, et mettre à jour
+ * l'affichage après modification.
+ * 
+ * @file Modifier_info.js
+ * @package Orüme\Admin\JS
+ * @version 1.0.0
+ */
+
 document.addEventListener("DOMContentLoaded", function () {
-  const editModal = document.getElementById("editModal");
-  const closeEdit = document.querySelector(".close-edit");
-  const editForm = document.getElementById("editForm");
+    /**
+     * Éléments du DOM
+     * @type {HTMLElement|null}
+     */
+    const editModal = document.getElementById("editModal");
+    const closeEdit = document.querySelector(".close-edit");
+    const editForm = document.getElementById("editForm");
 
-  if (!editModal || !editForm) {
-    console.error("❌ Le modal ou le formulaire de modification n'existe pas dans le DOM.");
-    return;
-  }
+    // Vérifier que les éléments existent
+    if (!editModal || !editForm) {
+        console.error("❌ Le modal ou le formulaire de modification n'existe pas dans le DOM.");
+        return;
+    }
 
-  // Cache toujours le modal au départ
-  editModal.style.display = "none";
+    // Cacher le modal au chargement
+    editModal.style.display = "none";
 
-  // Variable pour stocker la carte à modifier
-  let currentCard = null;
+    /**
+     * Carte actuellement en cours de modification
+     * @type {HTMLElement|null}
+     */
+    let currentCard = null;
 
   // Quand on clique sur "Modifier"
   document.querySelectorAll(".btn-edit").forEach((btn) => {
@@ -74,19 +96,34 @@ document.addEventListener("DOMContentLoaded", function () {
     editModal.style.display = "none";
   });
 
-  // Fonctions utilitaires
-  function formatMonthInput(text) {
-    const mois = {
-      "Janvier": "01", "Février": "02", "Mars": "03", "Avril": "04", "Mai": "05", "Juin": "06",
-      "Juillet": "07", "Août": "08", "Septembre": "09", "Octobre": "10", "Novembre": "11", "Décembre": "12"
-    };
-    const [m, y] = text.split(" ");
-    return y && mois[m] ? `${y}-${mois[m]}` : "";
-  }
+    /**
+     * Convertir une date formatée (ex: "Janvier 2024") en format input month (YYYY-MM)
+     * 
+     * @param {string} text - Date au format "Mois Année"
+     * @returns {string} Date au format "YYYY-MM" ou chaîne vide si invalide
+     */
+    function formatMonthInput(text) {
+        const mois = {
+            "Janvier": "01", "Février": "02", "Mars": "03", "Avril": "04",
+            "Mai": "05", "Juin": "06", "Juillet": "07", "Août": "08",
+            "Septembre": "09", "Octobre": "10", "Novembre": "11", "Décembre": "12"
+        };
+        const [m, y] = text.split(" ");
+        return y && mois[m] ? `${y}-${mois[m]}` : "";
+    }
 
-  function formatDateDisplay(monthVal) {
-    const [y, m] = monthVal.split("-");
-    const noms = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
-    return `${noms[parseInt(m) - 1]} ${y}`;
-  }
+    /**
+     * Convertir une date au format input month (YYYY-MM) en format affichage (Mois Année)
+     * 
+     * @param {string} monthVal - Date au format "YYYY-MM"
+     * @returns {string} Date au format "Mois Année"
+     */
+    function formatDateDisplay(monthVal) {
+        const [y, m] = monthVal.split("-");
+        const noms = [
+            "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+            "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+        ];
+        return `${noms[parseInt(m) - 1]} ${y}`;
+    }
 });

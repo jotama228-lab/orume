@@ -12,7 +12,7 @@
         <span class="icon"><i class="fas fa-home"></i></span>
         <span class="text">Acceuil</span>
       </a>
-      <a href="admin/Messages.php" class="activeMesssage">
+      <a href="Messages.php" class="activeMesssage">
         <span class="icon"><i class="fas fa-envelope"></i></span>
         <span class="text">Messages</span>
       </a>
