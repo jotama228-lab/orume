@@ -31,7 +31,7 @@
             <!-- section d'ajout de site -->
      <div class="portfolio-header">
      
-        <form id="portfolioForm" class="portfolio-form">
+        <form id="portfolioForm" class="portfolio-form" method="POST" enctype="multipart/form-data">
           <div class="form-group">
             <label for="clientName">Nom du client</label>
             <input type="text" id="clientName" placeholder="Ex: Alpha Group" required>
@@ -65,92 +65,89 @@
     </section>
     <Section>
       <div class="portfolio-grid">
+        <?php
+        // Charger les sites depuis la base de données
+        require_once __DIR__ . '/../partials/connect.php';
+        
+        $sites = [];
+        if (isset($connect) && $connect) {
+            $query = "SELECT * FROM sites ORDER BY date_realisation DESC";
+            $result = mysqli_query($connect, $query);
+            if ($result) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $sites[] = $row;
+                }
+            }
+        }
+        
+        // Afficher les sites
+        if (!empty($sites)) {
+            foreach ($sites as $site) {
+                $id = htmlspecialchars($site['id'] ?? '', ENT_QUOTES, 'UTF-8');
+                $clientName = htmlspecialchars($site['client_name'] ?? '', ENT_QUOTES, 'UTF-8');
+                
+                // Gérer la date
+                $dateStr = $site['date_realisation'] ?? '';
+                $date = 'N/A';
+                if (!empty($dateStr)) {
+                    $timestamp = strtotime($dateStr);
+                    if ($timestamp !== false) {
+                        $date = date('F Y', $timestamp);
+                    }
+                }
+                
+                $contact = htmlspecialchars($site['contact'] ?? '', ENT_QUOTES, 'UTF-8');
+                $imagePath = htmlspecialchars($site['image_path'] ?? '', ENT_QUOTES, 'UTF-8');
+                
+                // Normaliser le chemin de l'image pour l'admin
+                if (!empty($imagePath)) {
+                    // Si le chemin commence par "images/", garder tel quel
+                    if (strpos($imagePath, 'images/') === 0) {
+                        // Déjà correct
+                    } 
+                    // Si le chemin commence par "admin/images/", enlever "admin/"
+                    elseif (strpos($imagePath, 'admin/images/') === 0) {
+                        $imagePath = str_replace('admin/', '', $imagePath);
+                    }
+                    // Sinon, supposer que c'est un chemin relatif depuis la racine admin
+                    else {
+                        $imagePath = 'images/' . basename($imagePath);
+                    }
+                } else {
+                    $imagePath = 'images/Admin/sites/default.jpg'; // Image par défaut
+                }
+                ?>
+                <div class="portfolio-card" data-id="<?php echo $id; ?>">
+                  <img src="<?php echo $imagePath; ?>" 
+                       alt="Site Web <?php echo $clientName; ?>" 
+                       class="portfolio-img"
+                       onerror="this.src='images/Admin/sites/agri.jpeg'; this.onerror=null;">
+                  <div class="portfolio-info">
+                    <h3>Client : <?php echo $clientName; ?></h3>
+                    <p><i class="fa-solid fa-calendar"></i> Date : <?php echo $date; ?></p>
+                    <?php if (!empty($contact)): ?>
+                    <p><i class="fa-solid fa-envelope"></i> Contact : <?php echo $contact; ?></p>
+                    <?php endif; ?>
 
-              <!-- CARD 1 -->
-              <div class="portfolio-card">
-                <img src="images/Admin/sites/agri.jpeg" alt="Site Web Client 1" class="portfolio-img">
-                <div class="portfolio-info">
-                  <h3>Client : Alpha Group</h3>
-                  <p><i class="fa-solid fa-calendar"></i> Date : Mars 2024</p>
-                  <p><i class="fa-solid fa-envelope"></i> Email : Alpha@gmail.com</p>
-                  <p><i class="fa-solid fa-phone"></i> Contact : +33 6 12 34 56 78</p>
-
-                  <!-- Actions -->
-                  <div class="portfolio-actions">
-                    <button class="btn-edit"><i class="fa-solid fa-pen-to-square"></i> Modifier</button>
-                    <button class="btn-delete"><i class="fa-solid fa-trash"></i> Supprimer</button>
+                    <!-- Actions -->
+                    <div class="portfolio-actions">
+                      <button class="btn-edit" data-id="<?php echo $id; ?>"><i class="fa-solid fa-pen-to-square"></i> Modifier</button>
+                      <button class="btn-delete" data-id="<?php echo $id; ?>"><i class="fa-solid fa-trash"></i> Supprimer</button>
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              <!-- CARD 2 -->
-              <div class="portfolio-card">
-                <img src="images/Admin/sites/furniture.jpeg" alt="Site Web Client 2" class="portfolio-img">
-                <div class="portfolio-info">
-                  <h3>Client : Bella Studio</h3>
-                  <p><i class="fa-solid fa-calendar"></i> Date : Juin 2024</p>
-                  <p><i class="fa-solid fa-envelope"></i> Email : contact@bellastudio.fr</p>
-                  <p><i class="fa-solid fa-phone"></i> Contact : +225 70 30 46 30</p>
-
-                  <!-- Actions -->
-                  <div class="portfolio-actions">
-                    <button class="btn-edit"><i class="fa-solid fa-pen-to-square"></i> Modifier</button>
-                    <button class="btn-delete"><i class="fa-solid fa-trash"></i> Supprimer</button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- CARD 3 -->
-              <div class="portfolio-card">
-                <img src="images/Admin/sites/grenade.jpeg" alt="Site Web Client 3" class="portfolio-img">
-                <div class="portfolio-info">
-                  <h3>Client : GreenMarket</h3>
-                  <p><i class="fa-solid fa-calendar"></i> Date : Janvier 2025</p>
-                  <p><i class="fa-solid fa-envelope"></i> Email : GreenMarket@gmail.com</p>
-                  <p><i class="fa-solid fa-phone"></i> Contact : +228 90 12 34 56</p>
-
-                  <!-- Actions -->
-                  <div class="portfolio-actions">
-                    <button class="btn-edit"><i class="fa-solid fa-pen-to-square"></i> Modifier</button>
-                    <button class="btn-delete"><i class="fa-solid fa-trash"></i> Supprimer</button>
-                  </div>
-                </div>
-          </div>
-
-        <!-- CARD 4 -->
-        <div class="portfolio-card">
-          <img src="images/Admin/sites/raisin.jpeg" alt="Site Web Client 4" class="portfolio-img">
-          <div class="portfolio-info">
-            <h3>Client : DigitalFood</h3>
-            <p><i class="fa-solid fa-calendar"></i> Date : Avril 2025</p>
-            <p><i class="fa-solid fa-envelope"></i> Email : info@digitalfood.com</p>
-            <p><i class="fa-solid fa-phone"></i> Contact : +228 96 15 08 33</p>
-
-            <!-- Actions -->
-            <div class="portfolio-actions">
-              <button class="btn-edit"><i class="fa-solid fa-pen-to-square"></i> Modifier</button>
-              <button class="btn-delete"><i class="fa-solid fa-trash"></i> Supprimer</button>
+                <?php
+            }
+        } else {
+            ?>
+            <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">
+              <p style="font-size: 18px;">Aucun site web ajouté pour le moment.</p>
+              <p style="font-size: 14px; margin-top: 10px;">Utilisez le formulaire ci-dessus pour ajouter votre premier site.</p>
             </div>
-          </div>
-        </div>
-
-          <!-- CARD 5 -->
-        <div class="portfolio-card">
-          <img src="images/Admin/sites/raisin.jpeg" alt="Site Web Client 4" class="portfolio-img">
-          <div class="portfolio-info">
-            <h3>Client : DigitalFood</h3>
-            <p><i class="fa-solid fa-calendar"></i> Date : Avril 2025</p>
-            <p><i class="fa-solid fa-envelope"></i> Email : info@digitalfood.com</p>
-            <p><i class="fa-solid fa-phone"></i> Contact : +228 96 15 08 33</p>
-
-            <!-- Actions -->
-            <div class="portfolio-actions">
-              <button class="btn-edit"><i class="fa-solid fa-pen-to-square"></i> Modifier</button>
-              <button class="btn-delete"><i class="fa-solid fa-trash"></i> Supprimer</button>
-            </div>
-          </div>
-        </div>
-</div>
+            <?php
+        }
+        ?>
+      </div>
 
    </section>
   </main>

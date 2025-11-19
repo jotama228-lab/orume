@@ -11,22 +11,51 @@
  * @version 1.0.0
  */
 
-// Charger le bootstrap de l'application
-require_once __DIR__ . '/bootstrap.php';
-
-use Orüme\Controllers\ContactController;
-
 // Traiter la soumission du formulaire si méthode POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $controller = new ContactController();
-    $controller->submit();
-    exit; // Le contrôleur gère la redirection
-}
+$messageFlash = '';
+$messageType = '';
 
-// Afficher la page de contact
-$controller = new ContactController();
-$controller->index();
-exit; // Ne pas exécuter le code HTML ci-dessous si le contrôleur gère l'affichage
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/partials/connect.php';
+    
+    // Récupérer et valider les données
+    $nom = trim($_POST['name'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $sujet = trim($_POST['subject'] ?? '');
+    $message = trim($_POST['message'] ?? '');
+    
+    // Validation
+    $errors = [];
+    if (empty($nom)) $errors[] = 'Le nom est requis';
+    if (empty($email)) $errors[] = 'L\'email est requis';
+    elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'L\'email n\'est pas valide';
+    if (empty($sujet)) $errors[] = 'Le sujet est requis';
+    if (empty($message)) $errors[] = 'Le message est requis';
+    elseif (strlen($message) < 10) $errors[] = 'Le message doit contenir au moins 10 caractères';
+    
+    // Si pas d'erreurs, sauvegarder
+    if (empty($errors) && isset($connect) && $connect) {
+        $nom = mysqli_real_escape_string($connect, $nom);
+        $email = mysqli_real_escape_string($connect, $email);
+        $sujet = mysqli_real_escape_string($connect, $sujet);
+        $message = mysqli_real_escape_string($connect, $message);
+        
+        $query = "INSERT INTO messages (nom, email, sujet, message, statut) VALUES ('$nom', '$email', '$sujet', '$message', 'non_lu')";
+        
+        if (mysqli_query($connect, $query)) {
+            $messageFlash = 'Votre message a été envoyé avec succès. Nous vous répondrons dans les plus brefs délais.';
+            $messageType = 'success';
+            // Réinitialiser les champs
+            $nom = $email = $sujet = $message = '';
+        } else {
+            $messageFlash = 'Une erreur est survenue lors de l\'envoi de votre message. Veuillez réessayer.';
+            $messageType = 'error';
+        }
+    } else {
+        $messageFlash = implode('<br>', $errors);
+        $messageType = 'error';
+    }
+}
 
 // Code HTML (sera utilisé si le contrôleur ne gère pas l'affichage)
 ?>
@@ -48,39 +77,32 @@ exit; // Ne pas exécuter le code HTML ci-dessous si le contrôleur gère l'affi
                 <h3>Obtenez votre <span>devis aujourd'hui</span></h3>
                 
                 <!-- Afficher les messages flash -->
-                <?php
-                $flashMessages = getFlashMessages();
-                foreach ($flashMessages as $flash) {
-                    $type = $flash['type'];
-                    $message = $flash['message'];
-                    $alertClass = $type === 'success' ? 'alert-success' : 'alert-error';
-                    echo "<div class='alert {$alertClass}'>{$message}</div>";
-                }
-                ?>
+                <?php if (!empty($messageFlash)): ?>
+                    <div class="alert <?php echo $messageType === 'success' ? 'alert-success' : 'alert-error'; ?>" style="padding: 15px; margin-bottom: 20px; border-radius: 5px; background: <?php echo $messageType === 'success' ? '#d4edda' : '#f8d7da'; ?>; color: <?php echo $messageType === 'success' ? '#155724' : '#721c24'; ?>;">
+                        <?php echo htmlspecialchars($messageFlash, ENT_QUOTES, 'UTF-8'); ?>
+                    </div>
+                <?php endif; ?>
                 
-                <form method="POST" action="/contact.php">
-                    <!-- Token CSRF pour la sécurité -->
-                    <input type="hidden" name="csrf_token" value="<?php echo generateCsrfToken(); ?>">
-                    
+                <form method="POST" action="contact.php">
                     <div class="form-row">
                         <div class="form-group">
                             <label for="name">Votre Nom</label>
-                            <input type="text" id="name" name="name" placeholder="Votre nom complet" required>
+                            <input type="text" id="name" name="name" placeholder="Votre nom complet" value="<?php echo isset($nom) ? htmlspecialchars($nom, ENT_QUOTES, 'UTF-8') : ''; ?>" required>
                         </div>
                         <div class="form-group">
                             <label for="email">E-mail</label>
-                            <input type="email" id="email" name="email" placeholder="example@gmail.com" required>
+                            <input type="email" id="email" name="email" placeholder="example@gmail.com" value="<?php echo isset($email) ? htmlspecialchars($email, ENT_QUOTES, 'UTF-8') : ''; ?>" required>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="subject">Sujet</label>
-                        <input type="text" id="subject" name="subject" placeholder="Sujet de votre message" required>
+                        <input type="text" id="subject" name="subject" placeholder="Sujet de votre message" value="<?php echo isset($sujet) ? htmlspecialchars($sujet, ENT_QUOTES, 'UTF-8') : ''; ?>" required>
                     </div>
 
                     <div class="form-group">
                         <label for="message">Votre Message</label>
-                        <textarea id="message" name="message" rows="4" placeholder="Votre message" required minlength="10"></textarea>
+                        <textarea id="message" name="message" rows="4" placeholder="Votre message" required minlength="10"><?php echo isset($message) ? htmlspecialchars($message, ENT_QUOTES, 'UTF-8') : ''; ?></textarea>
                     </div>
 
                     <button type="submit" style="color: #2c5a34;" class="btn-send">Envoyez</button>

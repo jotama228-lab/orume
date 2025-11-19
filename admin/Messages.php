@@ -18,17 +18,42 @@
 
     <!-- Cartes récap -->
     <section class="cards-summary">
+      <?php
+      // Charger les statistiques depuis la base de données
+      require_once __DIR__ . '/../partials/connect.php';
+      
+      $totalMessages = 0;
+      $nonLus = 0;
+      
+      if (isset($connect) && $connect) {
+          // Compter tous les messages
+          $queryTotal = "SELECT COUNT(*) as total FROM messages";
+          $resultTotal = mysqli_query($connect, $queryTotal);
+          if ($resultTotal) {
+              $row = mysqli_fetch_assoc($resultTotal);
+              $totalMessages = $row['total'];
+          }
+          
+          // Compter les messages non lus
+          $queryNonLus = "SELECT COUNT(*) as total FROM messages WHERE statut = 'non_lu'";
+          $resultNonLus = mysqli_query($connect, $queryNonLus);
+          if ($resultNonLus) {
+              $row = mysqli_fetch_assoc($resultNonLus);
+              $nonLus = $row['total'];
+          }
+      }
+      ?>
       <div class="card green">
         <i class="fas fa-envelope-open-text"></i>
         <div>
-          <h3>152</h3>
+          <h3><?php echo $totalMessages; ?></h3>
           <p>Mails reçus</p>
         </div>
       </div>
       <div class="card orange">
         <i class="fas fa-envelope"></i>
         <div>
-          <h3>12</h3>
+          <h3><?php echo $nonLus; ?></h3>
           <p>Mails non lus</p>
         </div>
       </div>
@@ -50,58 +75,63 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td>Jean Dupont</td>
-        <td>jean.dupont@example.com</td>
-        <td>Demande de devis</td>
-        <td class="message-content">Bonjour, j’aimerais avoir un devis pour la 
-          création d’un site vitrine.
-        </td>
-        <td>13 Oct 2025</td>
-        <td><span class="badge unread">Non lu</span></td>
-        <td class="actions">
-          <button class="btn-reply" onclick="repondre('jean.dupont@example.com','Demande de devis')">
-            <i class="fa-solid fa-reply"></i> Répondre
-          </button>
-          <button class="btn-delete" onclick="supprimerMessage(this)">
-            <i class="fa-solid fa-trash"></i> Supprimer
-          </button>
-        </td>
-      </tr>
-
-      <tr>
-        <td>Marie Togo</td>
-        <td>marie.togo@gmail.com</td>
-        <td>Collaboration possible</td>
-        <td class="message-content">Bonjour, je souhaite collaborer avec votre agence sur un projet web.</td>
-        <td>12 Oct 2025</td>
-        <td><span class="badge read">Lu</span></td>
-        <td class="actions">
-          <button class="btn-reply" onclick="repondre('marie.togo@gmail.com','Collaboration possible')">
-            <i class="fa-solid fa-reply"></i> Répondre
-          </button>
-          <button class="btn-delete" onclick="supprimerMessage(this)">
-            <i class="fa-solid fa-trash"></i> Supprimer
-          </button>
-        </td>
-      </tr>
-
-      <tr>
-        <td>Koffi Sena</td>
-        <td>koffi.sena@outlook.com</td>
-        <td>Demande identité visuelle</td>
-        <td class="message-content">Salut, j’aimerais confier la création de mon logo à Orüme.</td>
-        <td>10 Oct 2025</td>
-        <td><span class="badge unread">Répondre</span></td>
-        <td class="actions">
-          <button class="btn-reply" onclick="repondre('koffi.sena@outlook.com','Demande identité visuelle')">
-            <i class="fa-solid fa-reply"></i> Répondre
-          </button>
-          <button class="btn-delete" onclick="supprimerMessage(this)">
-            <i class="fa-solid fa-trash"></i> Supprimer
-          </button>
-        </td>
-      </tr>
+      <?php
+      // Charger les messages depuis la base de données
+      require_once __DIR__ . '/../partials/connect.php';
+      
+      $messages = [];
+      if (isset($connect) && $connect) {
+          $query = "SELECT * FROM messages ORDER BY created_at DESC";
+          $result = mysqli_query($connect, $query);
+          if ($result) {
+              while ($row = mysqli_fetch_assoc($result)) {
+                  $messages[] = $row;
+              }
+          }
+      }
+      
+      // Afficher les messages
+      if (!empty($messages)) {
+          foreach ($messages as $message) {
+              $id = htmlspecialchars($message['id'], ENT_QUOTES, 'UTF-8');
+              $nom = htmlspecialchars($message['nom'], ENT_QUOTES, 'UTF-8');
+              $email = htmlspecialchars($message['email'], ENT_QUOTES, 'UTF-8');
+              $sujet = htmlspecialchars($message['sujet'], ENT_QUOTES, 'UTF-8');
+              $msg = htmlspecialchars(substr($message['message'], 0, 100), ENT_QUOTES, 'UTF-8');
+              $date = date('d M Y', strtotime($message['created_at']));
+              $statut = $message['statut'];
+              
+              $badgeClass = $statut === 'non_lu' ? 'unread' : ($statut === 'repondu' ? 'repondu' : 'read');
+              $badgeText = $statut === 'non_lu' ? 'Non lu' : ($statut === 'repondu' ? 'Répondu' : 'Lu');
+              ?>
+              <tr data-id="<?php echo $id; ?>">
+                <td><?php echo $nom; ?></td>
+                <td><?php echo $email; ?></td>
+                <td><?php echo $sujet; ?></td>
+                <td class="message-content"><?php echo $msg; ?><?php echo strlen($message['message']) > 100 ? '...' : ''; ?></td>
+                <td><?php echo $date; ?></td>
+                <td><span class="badge <?php echo $badgeClass; ?>"><?php echo $badgeText; ?></span></td>
+                <td class="actions">
+                  <button class="btn-reply" onclick="repondre('<?php echo $email; ?>','<?php echo $sujet; ?>')">
+                    <i class="fa-solid fa-reply"></i> Répondre
+                  </button>
+                  <button class="btn-delete" onclick="supprimerMessage(<?php echo $id; ?>)">
+                    <i class="fa-solid fa-trash"></i> Supprimer
+                  </button>
+                </td>
+              </tr>
+              <?php
+          }
+      } else {
+          ?>
+          <tr>
+            <td colspan="7" style="text-align: center; padding: 20px;">
+              Aucun message pour le moment.
+            </td>
+          </tr>
+          <?php
+      }
+      ?>
     </tbody>
   </table>
     </section>
@@ -141,6 +171,40 @@
    <script src="js/sibebar.js"></script>
   <script src="js/Supprimer_Info.js"></script>
   <script src="js/repondre.js"></script>
+  <script>
+    // Fonction pour supprimer un message
+    function supprimerMessage(id) {
+      if (confirm("Voulez-vous vraiment supprimer ce message ?")) {
+        fetch(`api/delete_message.php?id=${id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            // Supprimer la ligne du tableau
+            const row = document.querySelector(`tr[data-id="${id}"]`);
+            if (row) {
+              row.style.transition = 'opacity 0.3s';
+              row.style.opacity = '0';
+              setTimeout(() => row.remove(), 300);
+            }
+            alert('Message supprimé avec succès');
+            // Recharger la page pour mettre à jour les statistiques
+            setTimeout(() => window.location.reload(), 500);
+          } else {
+            alert('Erreur : ' + data.message);
+          }
+        })
+        .catch(err => {
+          console.error('Erreur :', err);
+          alert('Une erreur est survenue lors de la suppression.');
+        });
+      }
+    }
+  </script>
 
   
 </body>
