@@ -33,23 +33,51 @@
     </header>
 
     <section class="content grid">
-      <div class="card">
-        <img src="https://via.placeholder.com/300x180" alt="Logo">
-        <h3>Logo Startup Togo</h3>
-        <p>Identité visuelle complète (logo + charte).</p>
-      </div>
-
-      <div class="card">
-        <img src="https://via.placeholder.com/300x180" alt="Logo">
-        <h3>Fashion House</h3>
-        <p>Design moderne pour une marque de mode.</p>
-      </div>
-
-      <div class="card">
-        <img src="https://via.placeholder.com/300x180" alt="Logo">
-        <h3>Agence Digitale</h3>
-        <p>Logo et charte graphique professionnelle.</p>
-      </div>
+      <?php
+      // Charger les identités visuelles depuis la base de données
+      require_once __DIR__ . '/../partials/connect.php';
+      
+      $identites = [];
+      if (isset($connect) && $connect) {
+          $query = "SELECT * FROM identites ORDER BY date_realisation DESC";
+          $result = mysqli_query($connect, $query);
+          if ($result) {
+              while ($row = mysqli_fetch_assoc($result)) {
+                  $identites[] = $row;
+              }
+          }
+      }
+      
+      // Afficher les identités
+      if (!empty($identites)) {
+          foreach ($identites as $identite) {
+              $id = htmlspecialchars($identite['id'], ENT_QUOTES, 'UTF-8');
+              $clientName = htmlspecialchars($identite['client_name'], ENT_QUOTES, 'UTF-8');
+              $imagePath = htmlspecialchars($identite['image_path'], ENT_QUOTES, 'UTF-8');
+              
+              // Normaliser le chemin de l'image
+              if (strpos($imagePath, 'images/') === 0) {
+                  $imagePath = $imagePath;
+              } elseif (strpos($imagePath, 'admin/images/') === 0) {
+                  $imagePath = str_replace('admin/images/', 'images/', $imagePath);
+              }
+              ?>
+              <div class="card" data-id="<?php echo $id; ?>">
+                <img src="<?php echo $imagePath; ?>" alt="<?php echo $clientName; ?>" 
+                     onerror="this.src='https://via.placeholder.com/300x180'; this.onerror=null;">
+                <h3><?php echo $clientName; ?></h3>
+                <p>Identité visuelle complète.</p>
+              </div>
+              <?php
+          }
+      } else {
+          ?>
+          <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+            <p>Aucune identité visuelle ajoutée pour le moment.</p>
+          </div>
+          <?php
+      }
+      ?>
     </section>
   </main>
 

@@ -27,71 +27,61 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     /**
-     * Gérer le clic sur le bouton d'ajout
+     * Gérer la soumission du formulaire
      */
-    addBtn.addEventListener("click", () => {
-        // Récupérer les valeurs du formulaire
-        const clientName = document.getElementById("clientName").value.trim();
-        const date = document.getElementById("dateRealisation").value;
-        const prix = document.getElementById("prix") ? document.getElementById("prix").value : "N/A";
-        const contact = document.getElementById("contact").value.trim();
-        const imageInput = document.getElementById("image");
+    const form = document.getElementById("portfolioForm");
+    if (form) {
+        form.addEventListener("submit", (e) => {
+            e.preventDefault(); // Empêcher le rechargement de la page
+            
+            // Récupérer les valeurs du formulaire
+            const clientName = document.getElementById("clientName").value.trim();
+            const date = document.getElementById("dateRealisation").value;
+            const prix = document.getElementById("prix") ? document.getElementById("prix").value : "N/A";
+            const contact = document.getElementById("contact").value.trim();
+            const imageInput = document.getElementById("image");
 
-        // Validation des champs requis
-        if (!clientName || !date || !contact || !imageInput.files.length) {
-            alert("⚠️ Veuillez remplir tous les champs avant d'ajouter un portfolio.");
-            return;
-        }
+            // Validation des champs requis
+            if (!clientName || !date || !contact || !imageInput.files.length) {
+                alert("⚠️ Veuillez remplir tous les champs avant d'ajouter un portfolio.");
+                return;
+            }
 
-        // Créer une URL d'aperçu pour l'image
-        const imageUrl = URL.createObjectURL(imageInput.files[0]);
+            // Envoyer les données au backend via API
+            const formData = new FormData();
+            formData.append('clientName', clientName);
+            formData.append('dateRealisation', date);
+            formData.append('contact', contact);
+            formData.append('image', imageInput.files[0]);
 
-        // Créer l'élément de carte
-        const card = document.createElement("div");
-        card.className = "portfolio-card";
-        card.innerHTML = `
-            <img src="${imageUrl}" alt="Portfolio de ${clientName}" class="portfolio-img">
-            <div class="portfolio-info">
-                <h3>Client : ${clientName}</h3>
-                <p><i class="fa-solid fa-calendar"></i> Date : ${date}</p>
-                ${prix !== "N/A" ? `<p><i class="fa-solid fa-dollar-sign"></i> Prix : ${prix} FCFA</p>` : ""}
-                <p><i class="fa-solid fa-envelope"></i> Contact : ${contact}</p>
-            </div>
-        `;
+            // Déterminer l'endpoint selon la page
+            const currentPage = window.location.pathname;
+            let apiEndpoint = 'api/add_site.php';
+            
+            if (currentPage.includes('affiche')) {
+                apiEndpoint = 'api/add_affiche.php';
+            }
 
-        // Ajouter la carte à la grille
-        const portfolioGrid = document.querySelector(".portfolio-grid");
-        if (portfolioGrid) {
-            portfolioGrid.appendChild(card);
-        }
-
-        // Réinitialiser le formulaire
-        document.getElementById("portfolioForm").reset();
-
-        /**
-         * TODO: Implémenter l'envoi vers le backend
-         * 
-         * Exemple d'implémentation avec fetch API :
-         * 
-         * const formData = new FormData(document.getElementById('portfolioForm'));
-         * 
-         * fetch('/admin/api/portfolio/add.php', {
-         *     method: 'POST',
-         *     body: formData
-         * })
-         * .then(res => res.json())
-         * .then(data => {
-         *     if (data.success) {
-         *         console.log('✅ Portfolio ajouté :', data);
-         *         // Optionnel : recharger la page ou mettre à jour l'affichage
-         *     } else {
-         *         alert('Erreur : ' + data.message);
-         *     }
-         * })
-         * .catch(err => {
-         *     console.error('Erreur :', err);
-         *     alert('Une erreur est survenue lors de l\'ajout du portfolio.');
-         * });
-         */
-    });
+            fetch(apiEndpoint, {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    // Afficher un message de succès
+                    alert('✅ ' + data.message);
+                    
+                    // Recharger la page pour afficher le nouvel élément
+                    window.location.reload();
+                } else {
+                    alert('❌ Erreur : ' + data.message);
+                }
+            })
+            .catch(err => {
+                console.error('Erreur :', err);
+                alert('Une erreur est survenue lors de l\'ajout. Veuillez réessayer.');
+            });
+        });
+    }
 });

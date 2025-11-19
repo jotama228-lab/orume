@@ -49,86 +49,59 @@
         <h1 class="portfolio-title">Affiches Réalisées</h1>
       </section>
 
-      <!-- CARTES D’AFFICHES -->
+      <!-- CARTES D'AFFICHES -->
       <div class="portfolio-grid" id="afficheContainer">
+        <?php
+        // Charger les affiches depuis la base de données
+        require_once __DIR__ . '/../partials/connect.php';
         
-        <!-- Affiche 1 -->
-        <div class="portfolio-card">
-          <img src="images/Admin/affiches/Agrocore.jpeg" alt="Affiche Client 1" class="portfolio-img">
-          <div class="portfolio-info">
-            <h3>Client : Agrocore</h3>
-            <p><i class="fa-solid fa-calendar"></i> Date : Février 2024</p>
-            <div class="portfolio-actions">
-              <button class="btn-edit"><i class="fa-solid fa-pen-to-square"></i> Modifier</button>
-              <button class="btn-delete"><i class="fa-solid fa-trash"></i> Supprimer</button>
+        $affiches = [];
+        if (isset($connect) && $connect) {
+            $query = "SELECT * FROM affiches ORDER BY date_realisation DESC";
+            $result = mysqli_query($connect, $query);
+            if ($result) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $affiches[] = $row;
+                }
+            }
+        }
+        
+        // Afficher les affiches
+        if (!empty($affiches)) {
+            foreach ($affiches as $affiche) {
+                $id = htmlspecialchars($affiche['id'], ENT_QUOTES, 'UTF-8');
+                $clientName = htmlspecialchars($affiche['client_name'], ENT_QUOTES, 'UTF-8');
+                $date = date('F Y', strtotime($affiche['date_realisation']));
+                $imagePath = htmlspecialchars($affiche['image_path'], ENT_QUOTES, 'UTF-8');
+                
+                // Normaliser le chemin de l'image
+                if (strpos($imagePath, 'images/') === 0) {
+                    $imagePath = $imagePath;
+                } elseif (strpos($imagePath, 'admin/images/') === 0) {
+                    $imagePath = str_replace('admin/images/', 'images/', $imagePath);
+                }
+                ?>
+                <div class="portfolio-card" data-id="<?php echo $id; ?>">
+                  <img src="<?php echo $imagePath; ?>" alt="Affiche <?php echo $clientName; ?>" class="portfolio-img">
+                  <div class="portfolio-info">
+                    <h3>Client : <?php echo $clientName; ?></h3>
+                    <p><i class="fa-solid fa-calendar"></i> Date : <?php echo $date; ?></p>
+                    <div class="portfolio-actions">
+                      <button class="btn-edit" data-id="<?php echo $id; ?>"><i class="fa-solid fa-pen-to-square"></i> Modifier</button>
+                      <button class="btn-delete" data-id="<?php echo $id; ?>"><i class="fa-solid fa-trash"></i> Supprimer</button>
+                    </div>
+                  </div>
+                </div>
+                <?php
+            }
+        } else {
+            ?>
+            <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+              <p>Aucune affiche ajoutée pour le moment.</p>
             </div>
-          </div>
-        </div>
-
-        <!-- Affiche 2 -->
-        <div class="portfolio-card">
-          <img src="images/Admin/affiches/SkincareBrand.jpeg" alt="Affiche Client 2" class="portfolio-img">
-          <div class="portfolio-info">
-            <h3>Client : Skincare Brand</h3>
-            <p><i class="fa-solid fa-calendar"></i> Date : Mars 2024</p>
-            <div class="portfolio-actions">
-              <button class="btn-edit"><i class="fa-solid fa-pen-to-square"></i> Modifier</button>
-              <button class="btn-delete"><i class="fa-solid fa-trash"></i> Supprimer</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Affiche 3 -->
-        <div class="portfolio-card">
-          <img src="images/Admin/affiches/Coffee shop drink.jpeg" alt="Affiche Client 3" class="portfolio-img">
-          <div class="portfolio-info">
-            <h3>Client : Café Aroma</h3>
-            <p><i class="fa-solid fa-calendar"></i> Date : Avril 2024</p>
-            <div class="portfolio-actions">
-              <button class="btn-edit"><i class="fa-solid fa-pen-to-square"></i> Modifier</button>
-              <button class="btn-delete"><i class="fa-solid fa-trash"></i> Supprimer</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Affiche 4 -->
-        <div class="portfolio-card">
-          <img src="images/Admin/affiches/StudioFlyer.jpeg" alt="Affiche Client 4" class="portfolio-img">
-          <div class="portfolio-info">
-            <h3>Client : Studio Vision</h3>
-            <p><i class="fa-solid fa-calendar"></i> Date : Mai 2024</p>
-            <div class="portfolio-actions">
-              <button class="btn-edit"><i class="fa-solid fa-pen-to-square"></i> Modifier</button>
-              <button class="btn-delete"><i class="fa-solid fa-trash"></i> Supprimer</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Affiche 5 -->
-        <div class="portfolio-card">
-          <img src="images/Admin/affiches/urban grill.jpeg" alt="Affiche Client 5" class="portfolio-img">
-          <div class="portfolio-info">
-            <h3>Client : Urban grill</h3>
-            <p><i class="fa-solid fa-calendar"></i> Date : Juin 2024</p>
-            <div class="portfolio-actions">
-              <button class="btn-edit"><i class="fa-solid fa-pen-to-square"></i> Modifier</button>
-              <button class="btn-delete"><i class="fa-solid fa-trash"></i> Supprimer</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Affiche 6 -->
-        <div class="portfolio-card">
-          <img src="images/Admin/affiches/Affiche6.jpg" alt="Affiche Client 6" class="portfolio-img">
-          <div class="portfolio-info">
-            <h3>Client : Decus</h3>
-            <p><i class="fa-solid fa-calendar"></i> Date : Juillet 2024</p>
-            <div class="portfolio-actions">
-              <button class="btn-edit"><i class="fa-solid fa-pen-to-square"></i> Modifier</button>
-              <button class="btn-delete"><i class="fa-solid fa-trash"></i> Supprimer</button>
-            </div>
-          </div>
-        </div>
+            <?php
+        }
+        ?>
       </div>
     </section>
   </main>
