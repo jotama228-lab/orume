@@ -40,72 +40,116 @@ document.addEventListener('DOMContentLoaded', () => {
 /* PAGE PORTFOLIO FILTRAGE*/
 document.addEventListener('DOMContentLoaded', function() {
   const buttons = document.querySelectorAll('.filter-buttons button');
-  const items = document.querySelectorAll('.portfolo-grid .item');
+  const items = document.querySelectorAll('.portfolio-grid .item');
   const modal = document.getElementById('imageModal');
   const modalImg = document.querySelector('.modal-image');
-  const closeBtn = document.querySelector('.close');
-  const nextBtn = document.querySelector('.next');
-  const prevBtn = document.querySelector('.prev');
+  const closeBtn = document.querySelector('.modal .close');
+  const nextBtn = document.querySelector('.modal .next');
+  const prevBtn = document.querySelector('.modal .prev');
+
+  // Vérifier que les éléments existent
+  if (!modal || !modalImg || !closeBtn || !nextBtn || !prevBtn) {
+    console.warn('Éléments de la modale introuvables sur la page portfolio');
+  }
 
   let currentImages = [];
   let currentIndex = 0;
 
   // --- FILTRAGE ---
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      buttons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+  if (buttons.length > 0) {
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
 
-      const filter = btn.getAttribute('data-filter');
-      items.forEach(item => {
-        if (filter === 'all' || item.classList.contains(filter)) {
-          item.style.display = 'block';
-        } else {
-          item.style.display = 'none';
+        const filter = btn.getAttribute('data-filter');
+        if (items.length > 0) {
+          items.forEach(item => {
+            if (filter === 'all' || item.classList.contains(filter)) {
+              item.style.display = 'block';
+            } else {
+              item.style.display = 'none';
+            }
+          });
         }
       });
     });
-  });
+  }
 
   // --- OUVERTURE DE LA MODALE ---
-  items.forEach((item, index) => {
-    item.addEventListener('click', () => {
-      const activeFilter = document.querySelector('.filter-buttons .active').dataset.filter;
-      currentImages = Array.from(items)
-        .filter(i => activeFilter === 'all' || i.classList.contains(activeFilter))
-        .map(i => i.querySelector('img').src);
+  if (items.length > 0 && modal && modalImg) {
+    items.forEach((item, index) => {
+      item.addEventListener('click', () => {
+        const activeBtn = document.querySelector('.filter-buttons .active');
+        if (!activeBtn) return;
+        
+        const activeFilter = activeBtn.getAttribute('data-filter') || 'all';
+        currentImages = Array.from(items)
+          .filter(i => {
+            if (activeFilter === 'all') return true;
+            return i.classList.contains(activeFilter);
+          })
+          .map(i => {
+            const img = i.querySelector('img');
+            return img ? img.src : null;
+          })
+          .filter(src => src !== null);
 
-      currentIndex = currentImages.indexOf(item.querySelector('img').src);
-      openModal(currentImages[currentIndex]);
+        const clickedImg = item.querySelector('img');
+        if (clickedImg) {
+          currentIndex = currentImages.indexOf(clickedImg.src);
+          if (currentIndex === -1) currentIndex = 0;
+          openModal(currentImages[currentIndex]);
+        }
+      });
     });
-  });
+  }
 
   function openModal(src) {
-    modal.style.display = 'block';
-    modalImg.src = src;
+    if (modal && modalImg) {
+      modal.style.display = 'block';
+      modalImg.src = src;
+    }
   }
 
   // --- FERMER MODALE ---
-  closeBtn.addEventListener('click', () => modal.style.display = 'none');
-  modal.addEventListener('click', e => { if (e.target === modal) modal.style.display = 'none'; });
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      if (modal) modal.style.display = 'none';
+    });
+  }
+  
+  if (modal) {
+    modal.addEventListener('click', e => { 
+      if (e.target === modal) modal.style.display = 'none'; 
+    });
+  }
 
   // --- NAVIGATION ---
-  nextBtn.addEventListener('click', () => {
-    currentIndex = (currentIndex + 1) % currentImages.length;
-    modalImg.src = currentImages[currentIndex];
-  });
+  if (nextBtn && modalImg) {
+    nextBtn.addEventListener('click', () => {
+      if (currentImages.length > 0) {
+        currentIndex = (currentIndex + 1) % currentImages.length;
+        modalImg.src = currentImages[currentIndex];
+      }
+    });
+  }
 
-  prevBtn.addEventListener('click', () => {
-    currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
-    modalImg.src = currentImages[currentIndex];
-  });
+  if (prevBtn && modalImg) {
+    prevBtn.addEventListener('click', () => {
+      if (currentImages.length > 0) {
+        currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+        modalImg.src = currentImages[currentIndex];
+      }
+    });
+  }
 
   // --- Navigation clavier (facultatif) ---
   document.addEventListener('keydown', e => {
-    if (modal.style.display === 'block') {
-      if (e.key === 'ArrowRight') nextBtn.click();
-      if (e.key === 'ArrowLeft') prevBtn.click();
-      if (e.key === 'Escape') closeBtn.click();
+    if (modal && modal.style.display === 'block') {
+      if (e.key === 'ArrowRight' && nextBtn) nextBtn.click();
+      if (e.key === 'ArrowLeft' && prevBtn) prevBtn.click();
+      if (e.key === 'Escape' && closeBtn) closeBtn.click();
     }
   });
 });
@@ -135,6 +179,7 @@ inputs.forEach(input => {
 
 
 /* PAGE ACCEUIL PORTFOLIO ANIMATION */
+document.addEventListener('DOMContentLoaded', function() {
   const images = document.querySelectorAll('.portfolio .card img');
   const lightbox = document.getElementById('lightbox');
   const lightboxImg = document.getElementById('lightbox-img');
@@ -142,9 +187,16 @@ inputs.forEach(input => {
   const prevBtn = document.querySelector('.lightbox .prev');
   const nextBtn = document.querySelector('.lightbox .next');
   
+  // Vérifier que tous les éléments existent
+  if (!lightbox || !lightboxImg || !closeBtn || !prevBtn || !nextBtn || images.length === 0) {
+    console.warn('Éléments de la lightbox introuvables sur la page d\'accueil');
+    return;
+  }
+  
   let currentIndex = 0;
 
   function showImage(index) {
+    if (index < 0 || index >= images.length) return;
     currentIndex = index;
     lightboxImg.src = images[index].src;
     lightbox.style.display = 'flex';
@@ -155,14 +207,29 @@ inputs.forEach(input => {
   });
 
   closeBtn.addEventListener('click', () => lightbox.style.display = 'none');
-  nextBtn.addEventListener('click', () => showImage((currentIndex + 1) % images.length));
-  prevBtn.addEventListener('click', () => showImage((currentIndex - 1 + images.length) % images.length));
+  nextBtn.addEventListener('click', () => {
+    if (images.length > 0) {
+      showImage((currentIndex + 1) % images.length);
+    }
+  });
+  prevBtn.addEventListener('click', () => {
+    if (images.length > 0) {
+      showImage((currentIndex - 1 + images.length) % images.length);
+    }
+  });
 
   // Fermer avec la touche Échap
   document.addEventListener('keydown', (e) => {
-    if (e.key === "Escape") lightbox.style.display = 'none';
-    if (e.key === "ArrowRight") nextBtn.click();
-    if (e.key === "ArrowLeft") prevBtn.click();
+    if (lightbox.style.display === 'flex') {
+      if (e.key === "Escape") lightbox.style.display = 'none';
+      if (e.key === "ArrowRight" && images.length > 0) {
+        showImage((currentIndex + 1) % images.length);
+      }
+      if (e.key === "ArrowLeft" && images.length > 0) {
+        showImage((currentIndex - 1 + images.length) % images.length);
+      }
+    }
   });
+});
 
 
