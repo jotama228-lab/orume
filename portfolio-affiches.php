@@ -14,33 +14,21 @@
 // Charger les affiches depuis la base de données
 $affiches = [];
 
-// Essayer de charger depuis la BDD
-if (file_exists(__DIR__ . '/bootstrap.php')) {
-    try {
-        require_once __DIR__ . '/bootstrap.php';
-        $afficheModel = new \Orüme\Models\AfficheModel();
-        $affiches = $afficheModel->all('date_realisation', 'DESC');
-    } catch (Exception $e) {
-        error_log("Erreur lors du chargement des affiches : " . $e->getMessage());
-    }
-}
-
-// Si pas d'affiches depuis la BDD, utiliser une connexion directe
-if (empty($affiches)) {
-    try {
-        require_once __DIR__ . '/partials/connect.php';
-        if (isset($connect) && $connect) {
-            $query = "SELECT * FROM affiches ORDER BY date_realisation DESC";
-            $result = mysqli_query($connect, $query);
-            if ($result) {
-                while ($row = mysqli_fetch_assoc($result)) {
-                    $affiches[] = $row;
-                }
+// Utiliser une connexion directe à la base de données
+try {
+    require_once __DIR__ . '/partials/connect.php';
+    if (isset($connect) && $connect) {
+        $query = "SELECT * FROM affiches ORDER BY date_realisation DESC";
+        $result = mysqli_query($connect, $query);
+        if ($result) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $affiches[] = $row;
             }
         }
-    } catch (Exception $e) {
-        error_log("Erreur connexion BDD directe : " . $e->getMessage());
     }
+} catch (Exception $e) {
+    error_log("Erreur connexion BDD : " . $e->getMessage());
+    $affiches = [];
 }
 ?>
 <!DOCTYPE html>
@@ -59,6 +47,15 @@ if (empty($affiches)) {
 <!-- === SECTION PORTFOLIO AFFICHES === -->
 <section class="portfolio-section">
     <div class="portfolio-conteneur">
+        <div class="filter-row">
+            <div class="filter-buttons">
+                <a href="portfolio.php" class="filter-btn">Tout</a>
+                <a href="portfolio-sites.php" class="filter-btn">Sites</a>
+                <a href="portfolio-shooting.php" class="filter-btn">Shooting</a>
+                <a href="portfolio-identite.php" class="filter-btn">Identité visuelle</a>
+                <a href="portfolio-affiches.php" class="filter-btn active">Affiches</a>
+            </div>
+        </div>
         <h2 class="portfolio-title">Nos Affiches</h2>
         
         <div class="portfolio-grid">

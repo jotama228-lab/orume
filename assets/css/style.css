@@ -15,6 +15,7 @@ body {
 .hero {
   background: url('feuillage.jpg') no-repeat center center/cover;
   position: relative;
+  padding: 80px 2%;
 }
 
 /* Overlay sombre */
@@ -23,6 +24,7 @@ body {
   position: absolute;
   top: 0; left: 0;
   width: 100%; height: 100%;
+  
   z-index: 1;
 }
 
@@ -501,9 +503,24 @@ body {
 /* Grille */
 .portfolio-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 30px;
-  justify-content: center;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  align-items: start;
+  margin-bottom: 40px;
+}
+
+@media (max-width: 900px) {
+  .portfolio-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .portfolio-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
 }
 
 /* Cartes uniformes */
@@ -530,22 +547,55 @@ body {
 
 
 /* filtre card portfolio */
-.filter-buttons button {
-  background: none;
-  border: 2px solid #0a4b2e;
-  color: #0a4b2e;
-  padding: 8px 18px;
-  border-radius: 30px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-weight: 600;
+/* Styles pour les boutons de filtre */
+.filter-buttons button,
+.filter-buttons .filter-btn,
+.filter-buttons a.filter-btn,
+.filter-buttons a {
+  background: transparent !important;
+  border: 2px solid #0e5739 !important;
+  color: #0e5739 !important;
+  padding: 8px 18px !important;
+  border-radius: 999px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  display: inline-block !important;
+  font-size: 14px !important;
+  outline: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+}
+
+.filter-buttons a:link,
+.filter-buttons a:visited,
+.filter-buttons a:active {
+  text-decoration: none !important;
+  color: #0e5739 !important;
 }
 
 .filter-buttons button.active,
-.filter-buttons button:hover {
-  background-color: #f99d1c; /* orange Orüme */
-  color: white;
-  border-color: #f99d1c;
+.filter-buttons .filter-btn.active,
+.filter-buttons a.filter-btn.active,
+.filter-buttons > a.active {
+  background-color: #0e5739 !important;
+  color: white !important;
+  border-color: #0e5739 !important;
+  text-decoration: none !important;
+}
+
+.filter-buttons button:hover,
+.filter-buttons .filter-btn:hover,
+.filter-buttons a.filter-btn:hover,
+.filter-buttons > a:hover {
+  background-color: #0e5739 !important;
+  color: white !important;
+  border-color: #0e5739 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(14, 87, 57, 0.2) !important;
+  text-decoration: none !important;
 }
 
 /* Animation d’apparition */
@@ -643,11 +693,38 @@ body {
 
 /*PAGES PORTFOLIO*/
 
+/* Section portfolio */
+.portfolio-section {
+  background: #fff;
+}
+
 /* Container centré */
-.portfolo-conteneur {
+.portfolio-conteneur {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 80px 8%;
+  padding-bottom: 200px !important;
+}
+
+/* Titre portfolio */
+.portfolio-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #0a4b2e;
+  text-transform: uppercase;
+  margin-bottom: 40px;
+  text-align: center;
+  position: relative;
+}
+
+.portfolio-title::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: #f1a533;
+  margin: 12px auto 0;
+  border-radius: 2px;
 }
 
 /* --- FILTRES --- */
@@ -662,30 +739,10 @@ body {
   flex-wrap: wrap;
   gap: 10px;
   justify-content: center;
+  align-items: center;
 }
 
-.filter-buttons button {
-  background: transparent;
-  border: 2px solid #0e5739; /* vert */
-  color: #0e5739;
-  padding: 8px 14px;
-  border-radius: 999px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 180ms ease;
-  font-size: 14px;
-}
-
-.filter-buttons button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 18px rgba(14,87,57,0.08);
-}
-
-.filter-buttons button.active {
-  background: #0e5739;
-  color: #fff;
-  border-color: #0e5739;
-}
+/* Styles pour les boutons de filtre - déjà défini plus haut */
 
 /* --- GRILLE (3 colonnes desktop) --- */
 .portfolo-grid {
@@ -726,11 +783,20 @@ body {
 }
 
 /* Masquer les éléments (filtre) */
-.item.hide {
+.portfolio-grid .item.hide {
+  display: none !important;
   opacity: 0;
   transform: scale(0.95);
   pointer-events: none;
-  visibility: hidden; /* pour éviter tabulation */
+  visibility: hidden;
+}
+
+/* S'assurer que les éléments sans .hide sont visibles */
+.portfolio-grid .item:not(.hide) {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
 }
 
 /* --- Responsive --- */
@@ -920,12 +986,12 @@ body {
 
 .contact-subtitle {
   color: #d4a62a;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 400;
   text-transform: none;
   letter-spacing: 0.5px;
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   font-style: normal;
 }
 
@@ -1083,27 +1149,23 @@ input:focus, textarea:focus {
   background: #f5f5f5;
   padding: 0;
   margin: 0;
+  width: 100%;
 }
 
 .map-container {
   max-width: 100%;
   margin: 0;
   padding: 0;
+  width: 100%;
+  position: relative;
 }
 
-.map-placeholder {
+.map-iframe {
   width: 100%;
-  height: 400px;
-  background: #e8e8e8;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #666;
-  font-size: 1.1rem;
-  font-weight: 500;
+  height: 450px;
   border: none;
-  position: relative;
-  overflow: hidden;
+  display: block;
+  filter: grayscale(20%);
 }
 
 /* ===== SECTION QUALITÉS ===== */
@@ -1200,6 +1262,7 @@ input:focus, textarea:focus {
 @media (max-width: 900px) {
   .contact-hero-content h1 {
     font-size: 2.5rem;
+    
   }
   
   .contact-hero-content p {

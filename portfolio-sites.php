@@ -33,11 +33,11 @@ try {
 // Si toujours pas de sites, utiliser des données par défaut
 if (empty($sites)) {
     $sites = [
-        ['image_path' => 'admin/images/Admin/sites/agri.jpeg', 'client_name' => 'Alpha Group'],
-        ['image_path' => 'admin/images/Admin/sites/furniture.jpeg', 'client_name' => 'Bella Studio'],
-        ['image_path' => 'admin/images/Admin/sites/grenade.jpeg', 'client_name' => 'GreenMarket'],
-        ['image_path' => 'admin/images/Admin/sites/raisin.jpeg', 'client_name' => 'DigitalFood'],
-        ['image_path' => 'admin/images/Admin/sites/tech.jpeg', 'client_name' => 'TechCorp']
+        ['image_path' => '/admin/images/Admin/sites/agri.jpeg', 'client_name' => 'Alpha Group'],
+        ['image_path' => '/admin/images/Admin/sites/furniture.jpeg', 'client_name' => 'Bella Studio'],
+        ['image_path' => '/admin/images/Admin/sites/grenade.jpeg', 'client_name' => 'GreenMarket'],
+        ['image_path' => '/admin/images/Admin/sites/raisin.jpeg', 'client_name' => 'DigitalFood'],
+        ['image_path' => '/admin/images/Admin/sites/tech.jpeg', 'client_name' => 'TechCorp']
     ];
 }
 ?>
@@ -57,6 +57,15 @@ if (empty($sites)) {
 <!-- === SECTION PORTFOLIO SITES === -->
 <section class="portfolio-section">
     <div class="portfolio-conteneur">
+        <div class="filter-row">
+            <div class="filter-buttons">
+                <a href="portfolio.php" class="filter-btn">Tout</a>
+                <a href="portfolio-sites.php" class="filter-btn active">Sites</a>
+                <a href="portfolio-shooting.php" class="filter-btn">Shooting</a>
+                <a href="portfolio-identite.php" class="filter-btn">Identité visuelle</a>
+                <a href="portfolio-affiches.php" class="filter-btn">Affiches</a>
+            </div>
+        </div>
         <h2 class="portfolio-title">Nos Sites Web</h2>
         
         <div class="portfolio-grid">
@@ -68,17 +77,17 @@ if (empty($sites)) {
                     
                     // Normaliser le chemin de l'image
                     if (empty($imagePath)) {
-                        $imagePath = 'admin/images/Admin/sites/agri.jpeg'; // Image par défaut
-                    } elseif (strpos($imagePath, 'admin/') === 0) {
-                        // Déjà correct
-                    } elseif (strpos($imagePath, 'images/') === 0) {
-                        $imagePath = 'admin/' . $imagePath;
+                        $imagePath = '/admin/images/Admin/sites/agri.jpeg'; // Image par défaut
                     } elseif (strpos($imagePath, '/') === 0) {
-                        // Chemin absolu, enlever le premier /
-                        $imagePath = ltrim($imagePath, '/');
+                        // Chemin absolu depuis la racine, déjà correct
+                    } elseif (strpos($imagePath, 'admin/') === 0) {
+                        // Ajouter le / au début
+                        $imagePath = '/' . $imagePath;
+                    } elseif (strpos($imagePath, 'images/') === 0) {
+                        $imagePath = '/admin/' . $imagePath;
                     } else {
                         // Chemin relatif, construire le chemin complet
-                        $imagePath = 'admin/images/Admin/sites/' . basename($imagePath);
+                        $imagePath = '/admin/images/Admin/sites/' . basename($imagePath);
                     }
                     
                     $altText = htmlspecialchars($site['client_name'] ?? 'Site web', ENT_QUOTES, 'UTF-8');
@@ -87,8 +96,7 @@ if (empty($sites)) {
                         <img src="<?php echo htmlspecialchars($imagePath, ENT_QUOTES, 'UTF-8'); ?>" 
                              alt="<?php echo $altText; ?>" 
                              class="portfolio-item-img"
-                             style="width: 100%; height: auto; object-fit: cover;"
-                             onerror="this.src='assets/img/logo-acceuil.png'; this.onerror=null;">
+                             onerror="this.src='/assets/img/logo-acceuil.png'; this.onerror=null;">
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
