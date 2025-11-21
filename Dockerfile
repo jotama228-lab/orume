@@ -1,35 +1,27 @@
 FROM php:8.2-apache
 
-# Activer les modules Apache nécessaires
-RUN a2enmod rewrite
-RUN a2enmod headers
+# Activer les modules Apache
+RUN a2enmod rewrite headers
 
-# Installer les extensions PHP nécessaires
-RUN docker-php-ext-install mysqli pdo pdo_mysql
-
-# Installer les dépendances système
-RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
+# Installer les dépendances et extensions PHP
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        libpng-dev \
+        libjpeg-dev \
+        libfreetype6-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd \
+    && docker-php-ext-install gd mysqli pdo pdo_mysql \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Définir le répertoire de travail
 WORKDIR /var/www/html
 
-# Copier les fichiers de l'application
+# Copier seulement le nécessaire
 COPY . /var/www/html
 
-# Définir les permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html
-
-# Exposer le port 80
+# Ajouter un .dockerignore (RECOMMANDÉ)
+# Exposer
 EXPOSE 80
 
 # Démarrer Apache
 CMD ["apache2-foreground"]
-
