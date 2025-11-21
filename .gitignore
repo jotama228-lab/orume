@@ -78,9 +78,9 @@ php_errors.log
 # Base de données
 # ============================================
 # Dumps SQL
-*.sql
+#*.sql
 *.dump
-!docker/mysql/init.sql
+#!docker/mysql/init.sql
 
 # ============================================
 # Uploads et fichiers utilisateur
