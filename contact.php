@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="contact-grid">
             <!-- Formulaire -->
             <div class="contact-form">
-                <span class="contact-subtitle">Contactez-nous</span>
+                <span class="contact-subtitle">-Contactez-nous</span>
                 <h3>Obtenez votre <span>devis aujourd'hui</span></h3>
                 
                 <!-- Afficher les messages flash -->
@@ -136,9 +136,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!-- Section Map -->
 <section class="map-section">
     <div class="map-container">
-        <div class="map-placeholder">
-            <p>Carte de localisation</p>
-        </div>
+        <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.5!2d1.2167!3d6.1375!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1023e34b8b3b3b3b%3A0x8b3b3b3b3b3b3b3b!2sLom%C3%A9%2C%20Togo!5e0!3m2!1sfr!2stg!4v1700000000000!5m2!1sfr!2stg"
+            width="100%" 
+            height="450" 
+            style="border:0;" 
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade"
+            class="map-iframe"
+            title="Carte de localisation - Orüme, Lomé, Togo">
+        </iframe>
     </div>
 </section>
 

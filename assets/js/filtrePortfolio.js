@@ -13,6 +13,8 @@
  */
 
 document.addEventListener("DOMContentLoaded", () => {
+    console.log("[filtrePortfolio] Script chargé");
+    
     /**
      * Récupérer tous les boutons de filtre
      * @type {Array<HTMLElement>}
@@ -27,15 +29,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Vérifier que les éléments existent (debug)
     if (!filterButtons.length) {
-        console.warn("[filtrePortfolio] Aucun bouton de filtre trouvé (.filter-buttons button).");
+        console.error("[filtrePortfolio] Aucun bouton de filtre trouvé (.filter-buttons button).");
+        return;
     } else {
-        console.log(`[filtrePortfolio] ${filterButtons.length} boutons de filtre trouvés.`);
+        console.log(`[filtrePortfolio] ${filterButtons.length} boutons de filtre trouvés:`, 
+            filterButtons.map(b => b.getAttribute("data-filter")));
     }
 
     if (!items.length) {
-        console.warn("[filtrePortfolio] Aucune .item trouvée dans .portfolio-grid.");
+        console.error("[filtrePortfolio] Aucune .item trouvée dans .portfolio-grid.");
+        return;
     } else {
         console.log(`[filtrePortfolio] ${items.length} éléments trouvés dans .portfolio-grid.`);
+        // Afficher les classes de chaque élément pour debug
+        items.forEach((item, i) => {
+            const classes = Array.from(item.classList);
+            console.log(`[filtrePortfolio] Item ${i}: classes =`, classes.join(", "));
+        });
     }
 
     /**
@@ -44,52 +54,83 @@ document.addEventListener("DOMContentLoaded", () => {
      * @param {string} category - Catégorie à afficher ("all", "sites", "shooting", etc.)
      */
     function showCategory(category) {
+        console.log(`[filtrePortfolio] Affichage de la catégorie: ${category}`);
+        
         // Mettre à jour l'état actif des boutons
         filterButtons.forEach(btn => {
-            btn.classList.toggle("active", btn.getAttribute("data-filter") === category);
+            const btnFilter = btn.getAttribute("data-filter");
+            if (btnFilter === category) {
+                btn.classList.add("active");
+            } else {
+                btn.classList.remove("active");
+            }
         });
 
         // Filtrer les éléments
-        items.forEach(item => {
+        let visibleCount = 0;
+        let hiddenCount = 0;
+        
+        items.forEach((item, index) => {
+            // Récupérer toutes les classes de l'élément
+            const itemClasses = item.className.split(' ').filter(c => c.trim() !== '');
+            
+            // Vérifier si l'élément appartient à la catégorie
+            // Les catégories possibles: sites, shooting, identite, affiches
+            let hasCategory = false;
+            
             if (category === "all") {
-                // Afficher tous les éléments
-                item.classList.remove("hide");
-                item.style.display = ""; // Remet le display par défaut (grid)
-                item.classList.add("fade-in");
+                hasCategory = true;
             } else {
-                // Afficher uniquement les éléments de la catégorie
-                if (item.classList.contains(category)) {
-                    item.classList.remove("hide");
-                    item.style.display = ""; // Laisse le CSS gérer l'affichage
-                    item.classList.add("fade-in");
-                } else {
-                    // Masquer les autres éléments avec animation
-                    item.classList.add("hide");
-                    // Attendre la durée de l'animation avant de couper l'affichage
-                    setTimeout(() => {
-                        if (item.classList.contains("hide")) {
-                            item.style.display = "none";
-                        }
-                    }, 220); // 220ms correspond à la durée de l'animation CSS
-                }
+                // Vérifier si l'élément a la classe correspondant à la catégorie
+                hasCategory = itemClasses.some(cls => cls === category);
+            }
+            
+            // Debug pour les premiers éléments
+            if (index < 3) {
+                console.log(`[filtrePortfolio] Item ${index}: classes=[${itemClasses.join(", ")}], category="${category}", hasCategory=${hasCategory}`);
+            }
+            
+            if (hasCategory) {
+                // Afficher l'élément
+                item.classList.remove("hide");
+                // Forcer l'affichage avec les styles inline si nécessaire
+                item.style.display = "";
+                item.style.visibility = "";
+                item.style.opacity = "";
+                visibleCount++;
+            } else {
+                // Masquer l'élément
+                item.classList.add("hide");
+                hiddenCount++;
             }
         });
+        
+        console.log(`[filtrePortfolio] Résultat: ${visibleCount} visibles, ${hiddenCount} cachés sur ${items.length} éléments`);
+        
+        // Forcer un reflow pour s'assurer que les changements sont appliqués
+        void items[0]?.offsetHeight;
     }
 
     /**
      * Attacher les écouteurs d'événements aux boutons de filtre
      */
-    filterButtons.forEach(btn => {
-        btn.addEventListener("click", () => {
-            const filterValue = (btn.getAttribute("data-filter") || "").trim();
+    filterButtons.forEach((btn, index) => {
+        const filterValue = btn.getAttribute("data-filter");
+        console.log(`[filtrePortfolio] Bouton ${index}: data-filter="${filterValue}"`);
+        
+        btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             
-            if (!filterValue) {
-                console.warn("[filtrePortfolio] data-filter manquant sur le bouton", btn);
+            const filter = (filterValue || "").trim();
+            
+            if (!filter) {
+                console.error("[filtrePortfolio] data-filter manquant sur le bouton", btn);
                 return;
             }
             
-            console.log(`[filtrePortfolio] Filtrer sur : ${filterValue}`);
-            showCategory(filterValue);
+            console.log(`[filtrePortfolio] Clic sur le bouton: ${filter}`);
+            showCategory(filter);
         });
     });
 
