@@ -63,17 +63,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="fr">
 <?php include 'partials/head.php'; ?>
 
-<!-- HERO CONTENT avec seulement une image -->
-<div class="hero-content">
-    <img src="assets/img/image-contact.png" alt="Orüme Hero" class="hero-img">
-</div>
-</header>
+<!-- HERO SECTION CONTACT -->
+<section class="contact-hero">
+    <div class="contact-hero-content">
+        <h1>Contactez-Nous</h1>
+        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut</p>
+    </div>
+</section>
 
 <section class="contact-section">
     <div class="container">
         <div class="contact-grid">
             <!-- Formulaire -->
             <div class="contact-form">
+                <span class="contact-subtitle">Contactez-nous</span>
                 <h3>Obtenez votre <span>devis aujourd'hui</span></h3>
                 
                 <!-- Afficher les messages flash -->
@@ -87,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="form-row">
                         <div class="form-group">
                             <label for="name">Votre Nom</label>
-                            <input type="text" id="name" name="name" placeholder="Votre nom complet" value="<?php echo isset($nom) ? htmlspecialchars($nom, ENT_QUOTES, 'UTF-8') : ''; ?>" required>
+                            <input type="text" id="name" name="name" placeholder="example@gmail.com" value="<?php echo isset($nom) ? htmlspecialchars($nom, ENT_QUOTES, 'UTF-8') : ''; ?>" required>
                         </div>
                         <div class="form-group">
                             <label for="email">E-mail</label>
@@ -97,58 +100,87 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <div class="form-group">
                         <label for="subject">Sujet</label>
-                        <input type="text" id="subject" name="subject" placeholder="Sujet de votre message" value="<?php echo isset($sujet) ? htmlspecialchars($sujet, ENT_QUOTES, 'UTF-8') : ''; ?>" required>
+                        <input type="text" id="subject" name="subject" placeholder="Mail" value="<?php echo isset($sujet) ? htmlspecialchars($sujet, ENT_QUOTES, 'UTF-8') : ''; ?>" required>
                     </div>
 
                     <div class="form-group">
                         <label for="message">Votre Message</label>
-                        <textarea id="message" name="message" rows="4" placeholder="Votre message" required minlength="10"><?php echo isset($message) ? htmlspecialchars($message, ENT_QUOTES, 'UTF-8') : ''; ?></textarea>
+                        <textarea id="message" name="message" rows="4" placeholder="Message" required minlength="10"><?php echo isset($message) ? htmlspecialchars($message, ENT_QUOTES, 'UTF-8') : ''; ?></textarea>
                     </div>
 
-                    <button type="submit" style="color: #2c5a34;" class="btn-send">Envoyez</button>
+                    <button type="submit" class="btn-send">Envoyez</button>
                 </form>
             </div>
 
-      <!-- Bloc coordonnées -->
-      <div class="contact-info">
-        <h4>Adresse</h4>
-        <p>303 Av. HCD, Horizon Nouveau,<br> Lomé - Adidogomé</p>
+            <!-- Bloc coordonnées -->
+            <div class="contact-info">
+                <h4>Adress</h4>
+                <p>253 rue HDN, Hedzranawoe,<br>Piscine Atlantide.</p>
 
-        <h4>Contact</h4>
-        <p>Téléphone : +228 91 21 60 63<br>E-mail : orumeagency@gmail.com</p>
+                <h4>Contact</h4>
+                <p>Phone: +228 99 21 50 63<br>Email: orumetg228@gmail.com</p>
 
-        <h4>Horaires</h4>
-        <p>Lundi au Vendredi : 9h00 - 18h00<br>Samedi : 9h00 - 12h30</p>
+                <h4>Horaires</h4>
+                <p>Lundi-Vendredi: 08:00-17:00<br>Samedi: 09:00-12:00</p>
 
-        <h4>Suivez-nous</h4>
-        <div class="socials">
-          <a href="#"><i class="fab fa-facebook-f"></i></a>
-          <a href="#"><i class="fab fa-instagram"></i></a>
+                <h4>Suivez-nous</h4>
+                <div class="socials">
+                    <a href="#" class="social-icon instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon tiktok"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
+</section>
+
+<!-- Section Map -->
+<section class="map-section">
+    <div class="map-container">
+        <div class="map-placeholder">
+            <p>Carte de localisation</p>
+        </div>
+    </div>
 </section>
 
 <!-- Section qualités -->
 <section class="qualities-section">
-  <div class="qualities-container">
-    <div class="quality">
-      <i class="fas fa-calendar-check"></i>
-      <p>Nous délivrons dans de brefs délais</p>
+    <div class="container">
+        <div class="qualities-container">
+            <div class="quality">
+                <div class="quality-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span class="quality-number">15</span>
+                </div>
+                <p>Nous délivrons dans de bref délai</p>
+            </div>
+            <div class="quality">
+                <div class="quality-icon">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <p>Equipe d'expert et professionnel</p>
+            </div>
+            <div class="quality">
+                <div class="quality-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <p>Nous répondons a vos besoins</p>
+            </div>
+        </div>
     </div>
-    <div class="quality">
-      <i class="fas fa-users"></i>
-      <p>Équipe d’experts et professionnels</p>
-    </div>
-    <div class="quality">
-      <i class="fas fa-comments"></i>
-      <p>Nous répondons à vos besoins</p>
-    </div>
-  </div>
 </section>
 
-
+<!-- Section qualités bandeau orange -->
+<section class="qualities-banner">
+    <div class="qualities-banner-content">
+        <span>Flexibilité</span>
+        <span class="star">*</span>
+        <span>Créativité</span>
+        <span class="star">*</span>
+        <span>Professionalisme</span>
+        <span class="star">*</span>
+        <span>Rigueur</span>
+    </div>
+</section>
 
 <?php
       include'partials/footer.php'

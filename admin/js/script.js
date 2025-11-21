@@ -4,6 +4,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const hamburgerTop = document.getElementById("hamburger-top");
   const overlay = document.getElementById("overlay");
 
+  // Vérifier que les éléments existent
+  if (!sidebar || !hamburger || !hamburgerTop || !overlay) {
+    console.warn("Éléments de la sidebar introuvables");
+    return;
+  }
 
   // Toggle sidebar (both buttons)
   function toggleSidebar() {
