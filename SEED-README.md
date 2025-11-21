@@ -123,3 +123,4 @@ Ou via phpMyAdmin dans l'onglet "SQL".
 - `seed-database.ps1` - Script PowerShell Windows
 - `SEED-README.md` - Ce fichier de documentation
 
+nice
