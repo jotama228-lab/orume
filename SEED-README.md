@@ -1,16 +1,16 @@
-# 🌱 Script de Seed - 200 Éléments de Test
+# 🌱 Script de Seed - 170 Éléments de Test
 
-Ce script génère **200 éléments de données de test** dans la base de données pour le projet Orüme.
+Ce script génère **170 éléments de données de test** dans la base de données pour le projet Orüme.
 
 ## 📊 Répartition des données
 
-- **50 messages** de contact
+- **20 messages** de contact
 - **50 sites web** du portfolio
 - **50 affiches** créées
 - **50 identités visuelles**
 - **50 shootings** produits
 
-**Total : 200 éléments**
+**Total : 170 éléments**
 
 ## 🚀 Utilisation
 
@@ -29,6 +29,17 @@ chmod +x seed-database.sh
 
 ### Méthode 2 : Commande Docker manuelle
 
+#### Windows (CMD)
+```bash
+docker exec -i orume_db mysql -u orume_user -porume_password orume < docker\mysql\seed.sql
+```
+
+#### Windows (PowerShell)
+```powershell
+Get-Content docker\mysql\seed.sql | docker exec -i orume_db mysql -u orume_user -porume_password orume
+```
+
+#### Linux/Mac
 ```bash
 docker exec -i orume_db mysql -u orume_user -porume_password orume < docker/mysql/seed.sql
 ```
@@ -109,5 +120,7 @@ Ou via phpMyAdmin dans l'onglet "SQL".
 - `docker/mysql/seed.sql` - Script SQL principal
 - `seed-database.sh` - Script shell Linux/Mac
 - `seed-database.bat` - Script batch Windows
+- `seed-database.ps1` - Script PowerShell Windows
 - `SEED-README.md` - Ce fichier de documentation
 
+nice

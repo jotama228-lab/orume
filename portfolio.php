@@ -17,11 +17,11 @@ include 'partials/head.php';
   <div class="portfolio-conteneur">
     <div class="filter-row">
       <div class="filter-buttons">
-        <a href="portfolio.php" class="filter-btn <?php echo basename($_SERVER['PHP_SELF']) == 'portfolio.php' ? 'active' : ''; ?>">Tout</a>
-        <a href="portfolio-sites.php" class="filter-btn <?php echo basename($_SERVER['PHP_SELF']) == 'portfolio-sites.php' ? 'active' : ''; ?>">Sites</a>
-        <a href="portfolio-shooting.php" class="filter-btn <?php echo basename($_SERVER['PHP_SELF']) == 'portfolio-shooting.php' ? 'active' : ''; ?>">Shooting</a>
-        <a href="portfolio-identite.php" class="filter-btn <?php echo basename($_SERVER['PHP_SELF']) == 'portfolio-identite.php' ? 'active' : ''; ?>">Identité visuelle</a>
-        <a href="portfolio-affiches.php" class="filter-btn <?php echo basename($_SERVER['PHP_SELF']) == 'portfolio-affiches.php' ? 'active' : ''; ?>">Affiches</a>
+        <button onclick="window.location.href='portfolio.php'" class="filter-btn <?php echo basename($_SERVER['PHP_SELF']) == 'portfolio.php' ? 'active' : ''; ?>">Tout</button>
+        <button onclick="window.location.href='portfolio-sites.php'" class="filter-btn <?php echo basename($_SERVER['PHP_SELF']) == 'portfolio-sites.php' ? 'active' : ''; ?>">Sites</button>
+        <button onclick="window.location.href='portfolio-shooting.php'" class="filter-btn <?php echo basename($_SERVER['PHP_SELF']) == 'portfolio-shooting.php' ? 'active' : ''; ?>">Shooting</button>
+        <button onclick="window.location.href='portfolio-identite.php'" class="filter-btn <?php echo basename($_SERVER['PHP_SELF']) == 'portfolio-identite.php' ? 'active' : ''; ?>">Identité visuelle</button>
+        <button onclick="window.location.href='portfolio-affiches.php'" class="filter-btn <?php echo basename($_SERVER['PHP_SELF']) == 'portfolio-affiches.php' ? 'active' : ''; ?>">Affiches</button>
       </div>
     </div>
 
@@ -274,7 +274,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-<script src="assets/js/filtrePortfolio.js"></script> 
+<!-- Script de filtrage désactivé car on utilise des liens maintenant -->
+<!-- <script src="assets/js/filtrePortfolio.js"></script> --> 
 
 
 </body>

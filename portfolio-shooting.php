@@ -47,11 +47,11 @@ try {
     <div class="portfolio-conteneur">
         <div class="filter-row">
             <div class="filter-buttons">
-                <a href="portfolio.php" class="filter-btn">Tout</a>
-                <a href="portfolio-sites.php" class="filter-btn">Sites</a>
-                <a href="portfolio-shooting.php" class="filter-btn active">Shooting</a>
-                <a href="portfolio-identite.php" class="filter-btn">Identité visuelle</a>
-                <a href="portfolio-affiches.php" class="filter-btn">Affiches</a>
+                <button onclick="window.location.href='portfolio.php'" class="filter-btn">Tout</button>
+                <button onclick="window.location.href='portfolio-sites.php'" class="filter-btn">Sites</button>
+                <button onclick="window.location.href='portfolio-shooting.php'" class="filter-btn active">Shooting</button>
+                <button onclick="window.location.href='portfolio-identite.php'" class="filter-btn">Identité visuelle</button>
+                <button onclick="window.location.href='portfolio-affiches.php'" class="filter-btn">Affiches</button>
             </div>
         </div>
         <h2 class="portfolio-title">Nos Shootings</h2>

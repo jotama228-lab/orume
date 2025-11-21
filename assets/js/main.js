@@ -180,6 +180,11 @@ inputs.forEach(input => {
 
 /* PAGE ACCEUIL PORTFOLIO ANIMATION */
 document.addEventListener('DOMContentLoaded', function() {
+  // Ne s'exécuter que sur la page d'accueil (acceuil.php)
+  if (!document.querySelector('.hero') || !document.querySelector('.portfolio')) {
+    return; // Pas la page d'accueil, sortir silencieusement
+  }
+  
   const images = document.querySelectorAll('.portfolio .card img');
   const lightbox = document.getElementById('lightbox');
   const lightboxImg = document.getElementById('lightbox-img');
@@ -189,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Vérifier que tous les éléments existent
   if (!lightbox || !lightboxImg || !closeBtn || !prevBtn || !nextBtn || images.length === 0) {
-    console.warn('Éléments de la lightbox introuvables sur la page d\'accueil');
+    // Ne pas afficher de warning si on n'est pas sur la page d'accueil
     return;
   }
   

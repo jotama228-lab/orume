@@ -13,7 +13,7 @@ body {
 
 /* ===== HERO BACKGROUND ===== */
 .hero {
-  background: url('feuillage.jpg') no-repeat center center/cover;
+  background: url('../img/background.PNG') no-repeat center center/cover;
   position: relative;
   padding: 80px 2%;
 }
@@ -549,53 +549,43 @@ body {
 /* filtre card portfolio */
 /* Styles pour les boutons de filtre */
 .filter-buttons button,
-.filter-buttons .filter-btn,
-.filter-buttons a.filter-btn,
-.filter-buttons a {
-  background: transparent !important;
-  border: 2px solid #0e5739 !important;
-  color: #0e5739 !important;
-  padding: 8px 18px !important;
-  border-radius: 999px !important;
-  cursor: pointer !important;
-  transition: all 0.3s ease !important;
-  font-weight: 600 !important;
-  text-decoration: none !important;
-  display: inline-block !important;
-  font-size: 14px !important;
-  outline: none !important;
-  -webkit-appearance: none !important;
-  -moz-appearance: none !important;
-  appearance: none !important;
-}
-
-.filter-buttons a:link,
-.filter-buttons a:visited,
-.filter-buttons a:active {
-  text-decoration: none !important;
-  color: #0e5739 !important;
+.filter-buttons .filter-btn {
+  background: transparent;
+  border: 2px solid #0e5739;
+  color: #0e5739;
+  padding: 8px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
+  font-family: inherit;
+  margin: 0;
 }
 
 .filter-buttons button.active,
-.filter-buttons .filter-btn.active,
-.filter-buttons a.filter-btn.active,
-.filter-buttons > a.active {
-  background-color: #0e5739 !important;
-  color: white !important;
-  border-color: #0e5739 !important;
-  text-decoration: none !important;
+.filter-buttons .filter-btn.active {
+  background-color: #0e5739;
+  color: white;
+  border-color: #0e5739;
 }
 
 .filter-buttons button:hover,
-.filter-buttons .filter-btn:hover,
-.filter-buttons a.filter-btn:hover,
-.filter-buttons > a:hover {
-  background-color: #0e5739 !important;
-  color: white !important;
-  border-color: #0e5739 !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 4px 12px rgba(14, 87, 57, 0.2) !important;
-  text-decoration: none !important;
+.filter-buttons .filter-btn:hover {
+  background-color: #0e5739;
+  color: white;
+  border-color: #0e5739;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(14, 87, 57, 0.2);
 }
 
 /* Animation d’apparition */
@@ -740,6 +730,8 @@ body {
   gap: 10px;
   justify-content: center;
   align-items: center;
+  position: relative;
+  z-index: 1;
 }
 
 /* Styles pour les boutons de filtre - déjà défini plus haut */
