@@ -12,154 +12,7 @@ body {
   color: #333;
 }
 
-/* Sidebar */
-.sidebar {
-  width: 220px;
-  background: #05382c; /* Vert Orume dominant */
-  color: #fff;
-  min-height: 100vh;
-  transition: width 0.3s;
-  position: fixed;
-  left: 0;
-  top: 0;
-  padding: 20px 10px;
-   z-index: 1000
-   
-}
-
-.sidebar .logo {
-  display: flex;
-  align-items: center;
-  margin-bottom: 30px;
-}
-
-
-
-.sidebar.collapsed {
-  width: 70px;
-}
-
-.sidebar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.sidebar h2 {
-  color: #fff;
-}
-
-/* Lien normal */
-.menu a {
-  display: flex;
-  align-items: center;
-  gap: 10px; /* espace entre icône et texte */
-  color: #fff;
-  padding: 12px;
-  border-radius: 8px;
-  margin: 8px 0;
-  text-decoration: none;
-  transition: background 0.3s, transform 0.2s;
-}
-
-/* Actif */
-.menu a.active {
-  background: #f27c1e;
-  font-weight: bold;
-}
-
-/* Hover */
-.menu a:hover {
-  background: #1e8b5a;
-  transform: translateX(5px);
-}
-
-/* Icônes */
-.menu .icon {
-  font-size: 20px;
-}
-
-/* Texte */
-.menu .text {
-  font-size: 15px;
-  white-space: nowrap;
-}
-
-/* --- Mode replié --- */
-.sidebar.collapsed {
-  width: 70px;
-}
-
-.sidebar.collapsed .menu .text {
-  display: none; /* masque le texte */
-}
-
-.sidebar.collapsed .menu a {
-  justify-content: center; /* centre uniquement l’icône */
-}
-
-.sidebar.sidebar-header.textorume {
-  display: none; /* masque le texte */
-}
-.hamburger {
-  background: none;
-  border: none;
-  font-size: 20px;
-  color: #fff;
-  cursor: pointer;
-}
-
-.menu {
-  margin-top: 30px;
-}
-
-/* le menu a l'etat normal */
-.menu a {
-  display: flex;
-  align-items: center;
-  gap: 10px; /* espace entre icône et texte */
-  color: #fff;
-  padding: 12px;
-  border-radius: 8px;
-  margin: 8px 0;
-  text-decoration: none;
-  transition: background 0.3s, transform 0.2s;
-}
-
-/* le menu a l'État actif */
-.menu a.active {
-   background: #f27c1e;
-  font-weight: bold;
-}
-
-/* Hover amélioré */
-.menu a:hover {
-  background: #f27c1e; /* Orange semi-transparent background: rgba(242, 124, 30, 0.8) */
-  transform: translateX(5px); /* petit effet décalage */
-}
-
-/* css Icônes */
-.menu .icon {
-  font-size: 20px;
-}
-
-/* css du  Texte sidebar */
-.menu .text {
-  font-size: 15px;
-  white-space: nowrap;
-}
-
-/* Main */
-.main-content {
-  margin-left: 220px;
-  padding: 20px;
-  flex: 1;
-  transition: margin-left 0.3s;
-}
-
-.sidebar.collapsed ~ .main-content {
-  margin-left: 70px;
-}
+/* Les styles de la sidebar sont maintenant dans sidebar-unified.css */
 
 /* Topbar */
 .topbar {
@@ -260,6 +113,97 @@ body {
 .overlay.active {
   display: block;
   opacity: 1;
+  visibility: visible;
+}
+
+/* === MEDIA QUERIES COMPLÉMENTAIRES === */
+
+/* Tablette */
+@media (max-width: 1024px) {
+  .main-content {
+    padding: 15px;
+  }
+
+  .topbar {
+    padding: 15px;
+    flex-wrap: wrap;
+  }
+
+  .welcome {
+    padding: 25px;
+  }
+
+  .charts {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+  }
+
+  .chart-card {
+    padding: 15px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .main-content {
+    width: 100% !important;
+    margin-left: 0 !important;
+    padding: 15px;
+  }
+
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 15px;
+    height: auto;
+  }
+
+  .TitrePage {
+    font-size: 1.5em;
+  }
+
+  .topbar-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .welcome {
+    padding: 20px;
+    border-radius: 12px;
+  }
+
+  .charts {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .chart-card {
+    padding: 15px;
+  }
+}
+
+/* Petit mobile */
+@media (max-width: 480px) {
+  .main-content {
+    padding: 10px;
+  }
+
+  .topbar {
+    padding: 12px;
+  }
+
+  .TitrePage {
+    font-size: 1.3em;
+  }
+
+  .welcome {
+    padding: 15px;
+  }
+
+  .chart-card {
+    padding: 12px;
+  }
 }
 
 }

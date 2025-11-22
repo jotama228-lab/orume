@@ -24,7 +24,7 @@
         <span class="icon"><i class="fas fa-image"></i></span>
         <span class="text">Affiches</span>
       </a>
-      <a href="identités.php"class="activeIdentité">
+      <a href="identites.php" class="activeIdentité">
         <span class="icon"><i class="fas fa-id-card icon"></i></span>
         <span class="text">Identités visuelles</span>
       </a>
@@ -32,7 +32,7 @@
         <span class="icon"><i class="fa-solid fa-camera"></i></span>
         <span class="text">Shooting</span>
       </a>
-      <a href=".php">
+      <a href="../index.php" class="btn-quitter">
         <span class="icon"><i class="fa-solid fa-arrow-left"></i></span>
         <span class="text">Quitter</span>
       </a>

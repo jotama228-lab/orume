@@ -6,71 +6,26 @@
   <title>OÜme Admin Dashboard</title>
   
   <!-- LYNK Css -->
+  <link rel="stylesheet" href="css/sidebar-unified.css">
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/sibebar.css">
   
   <!-- Librairie Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  
-  <!-- Script principal -->
-  <script defer src="js/script.js"></script>
   
   <!-- lynk Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
 <body>
 
-  <!-- Sidebar -->
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <h2 class="textorume">OrÜme</h2>
-      <button class="hamburger" id="hamburger">
-        <i class="fas fa-bars"></i>
-      </button>
-    </div>
-    
-    <nav class="menu">
-      <a href="#" class="active">
-        <span class="icon"><i class="fas fa-home"></i></span>
-        <span class="text">Acceuil</span>
-      </a>
-      <a href="Messages.php">
-        <span class="icon"><i class="fas fa-envelope"></i></span>
-        <span class="text">Messages</span>
-      </a>
-      <a href="portfolio.php">
-        <span class="icon"><i class="fas fa-briefcase"></i></span>
-        <span class="text">Sites</span>
-      </a>
-      <a href="affiche.php">
-        <span class="icon"><i class="fas fa-image"></i></span>
-        <span class="text">Affiches</span>
-      </a>
-      <a href="identités.html">
-        <span class="icon"><i class="fas fa-id-card icon"></i></span>
-        <span class="text">Identités visuelles</span>
-      </a>
-      <a href="Shooting.html">
-        <span class="icon"><i class="fa-solid fa-camera"></i></span>
-        <span class="text">Shooting</span>
-      </a>
-      <a href="Quitter.html">
-        <span class="icon"><i class="fa-solid fa-arrow-left"></i></span>
-        <span class="text">Quitter</span>
-      </a>
-    </nav>
-  </aside>
-
-  <!-- Overlay : <div id="overlay" class="overlay"></div>-->
+<?php
+  include 'adminpartials/aside.php';
+?>
 
   <!-- Main -->
   <main class="main-content">
     <!-- Topbar -->
     <header class="topbar">
-      <button class="hamburger" id="hamburger-top">
-        <i class="fas fa-bars"></i>
-      </button>
-          <h1 class="titrePage">Acceuil</h1>
+      <h1 class="titrePage">Acceuil</h1>
     </header>
 
     <!-- Welcome Section -->
@@ -100,8 +55,79 @@
     </section>
   </main>
 
-  <script src="js/script.js"></script>
   <script src="js/sibebar.js"></script>
+  <script src="js/active_sidebar.js"></script>
+  
+  <!-- Script pour initialiser les graphiques Chart.js -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Line Chart
+      const lineCtx = document.getElementById('lineChart');
+      if (lineCtx) {
+        new Chart(lineCtx, {
+          type: 'line',
+          data: {
+            labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+            datasets: [{
+              label: 'Ventes',
+              data: [12, 19, 3, 5, 2, 3],
+              borderColor: '#05382c',
+              tension: 0.1
+            }]
+          }
+        });
+      }
+
+      // Bar Chart
+      const barCtx = document.getElementById('barChart');
+      if (barCtx) {
+        new Chart(barCtx, {
+          type: 'bar',
+          data: {
+            labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+            datasets: [{
+              label: 'Visites',
+              data: [12, 19, 3, 5, 2, 3],
+              backgroundColor: '#f27c1e'
+            }]
+          }
+        });
+      }
+
+      // Area Chart
+      const areaCtx = document.getElementById('areaChart');
+      if (areaCtx) {
+        new Chart(areaCtx, {
+          type: 'line',
+          data: {
+            labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+            datasets: [{
+              label: 'Revenus',
+              data: [12, 19, 3, 5, 2, 3],
+              backgroundColor: 'rgba(5, 56, 44, 0.2)',
+              borderColor: '#05382c',
+              fill: true
+            }]
+          }
+        });
+      }
+
+      // Doughnut Chart
+      const doughnutCtx = document.getElementById('doughnutChart');
+      if (doughnutCtx) {
+        new Chart(doughnutCtx, {
+          type: 'doughnut',
+          data: {
+            labels: ['Sites', 'Affiches', 'Identités', 'Shootings'],
+            datasets: [{
+              data: [30, 25, 20, 25],
+              backgroundColor: ['#05382c', '#f27c1e', '#1e8b5a', '#0b7b4b']
+            }]
+          }
+        });
+      }
+    });
+  </script>
 
 </body>
 </html>

@@ -56,8 +56,34 @@ services:
     volumes:
       - db_data:/var/lib/mysql
       - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./docker/mysql/seed.sql:/docker-entrypoint-initdb.d/seed.sql
     networks:
       - orume_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "orume_user", "-porume_password"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # Service pour exécuter le seeder automatiquement si la DB est vide
+  seeder:
+    image: php:8.2-cli
+    container_name: orume_seeder
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DB_HOST=db
+      - DB_USER=orume_user
+      - DB_PASS=orume_password
+      - DB_NAME=orume
+    volumes:
+      - ./docker/mysql:/app
+    working_dir: /app
+    command: php auto-seed.php
+    networks:
+      - orume_network
+    restart: "no"
 
   # Service phpMyAdmin (optionnel)
   phpmyadmin:

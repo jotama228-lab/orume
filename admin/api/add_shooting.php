@@ -1,10 +1,10 @@
 <?php
 /**
  * ============================================
- * API - AJOUTER UN SITE WEB
+ * API - AJOUTER UN SHOOTING
  * ============================================
  * 
- * Endpoint pour ajouter un nouveau site web dans le portfolio
+ * Endpoint pour ajouter un nouveau shooting dans le portfolio
  * 
  * @package Orüme\Admin\API
  * @version 1.0.0
@@ -12,7 +12,6 @@
 
 header('Content-Type: application/json');
 
-// Vérifier que la requête est en POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['success' => false, 'message' => 'Méthode non autorisée']);
@@ -27,17 +26,13 @@ if (!isset($connect) || !$connect) {
     exit;
 }
 
-// Récupérer les données
 $clientName = trim($_POST['clientName'] ?? '');
 $dateRealisation = $_POST['dateRealisation'] ?? '';
-$contact = trim($_POST['contact'] ?? '');
 $imageFile = $_FILES['image'] ?? null;
 
-// Validation
 $errors = [];
 if (empty($clientName)) $errors[] = 'Le nom du client est requis';
 if (empty($dateRealisation)) $errors[] = 'La date de réalisation est requise';
-if (empty($contact)) $errors[] = 'Le contact est requis';
 if (!$imageFile || $imageFile['error'] !== UPLOAD_ERR_OK) $errors[] = 'L\'image est requise';
 
 if (!empty($errors)) {
@@ -47,7 +42,7 @@ if (!empty($errors)) {
 }
 
 // Upload de l'image
-$uploadDir = __DIR__ . '/../images/Admin/sites/';
+$uploadDir = __DIR__ . '/../images/Admin/Shoot/';
 if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0755, true);
 }
@@ -55,7 +50,7 @@ if (!is_dir($uploadDir)) {
 $extension = pathinfo($imageFile['name'], PATHINFO_EXTENSION);
 $filename = uniqid() . '_' . time() . '.' . $extension;
 $uploadPath = $uploadDir . $filename;
-$imagePath = 'images/Admin/sites/' . $filename;
+$imagePath = 'images/Admin/Shoot/' . $filename;
 
 if (!move_uploaded_file($imageFile['tmp_name'], $uploadPath)) {
     http_response_code(500);
@@ -65,26 +60,18 @@ if (!move_uploaded_file($imageFile['tmp_name'], $uploadPath)) {
 
 // Insérer dans la base de données
 $clientName = mysqli_real_escape_string($connect, $clientName);
-$contact = mysqli_real_escape_string($connect, $contact);
 $imagePath = mysqli_real_escape_string($connect, $imagePath);
-$dateRealisation = mysqli_real_escape_string($connect, $dateRealisation . '-01'); // Ajouter le jour
+$dateRealisation = mysqli_real_escape_string($connect, $dateRealisation . '-01');
 
-$query = "INSERT INTO sites (client_name, date_realisation, contact, image_path) 
-          VALUES ('$clientName', '$dateRealisation', '$contact', '$imagePath')";
+$query = "INSERT INTO shootings (client_name, date_realisation, image_path) 
+          VALUES ('$clientName', '$dateRealisation', '$imagePath')";
 
 if (mysqli_query($connect, $query)) {
     $id = mysqli_insert_id($connect);
     echo json_encode([
         'success' => true, 
-        'message' => 'Site ajouté avec succès',
-        'id' => $id,
-        'data' => [
-            'id' => $id,
-            'client_name' => $clientName,
-            'date_realisation' => $dateRealisation,
-            'contact' => $contact,
-            'image_path' => $imagePath
-        ]
+        'message' => 'Shooting ajouté avec succès',
+        'id' => $id
     ]);
 } else {
     http_response_code(500);

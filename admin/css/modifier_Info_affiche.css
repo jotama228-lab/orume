@@ -123,3 +123,69 @@
 .close-edit:hover {
   color: #ff7b00;
 }
+
+/* === MEDIA QUERIES === */
+
+/* Tablette */
+@media (max-width: 1024px) {
+  .edit-modal-content {
+    width: 450px;
+    padding: 30px 25px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .edit-modal {
+    padding: 15px;
+  }
+
+  .edit-modal-content {
+    width: 95%;
+    max-width: 100%;
+    padding: 25px 20px;
+    border-radius: 12px;
+  }
+
+  .edit-modal-content h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .edit-modal-content .form-group {
+    margin-bottom: 18px;
+  }
+
+  .edit-modal-content input[type="text"],
+  .edit-modal-content input[type="month"],
+  .edit-modal-content input[type="file"] {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .btn-edit-save {
+    padding: 12px;
+    font-size: 15px;
+  }
+
+  .close-edit {
+    top: 12px;
+    right: 15px;
+    font-size: 22px;
+  }
+}
+
+/* Petit mobile */
+@media (max-width: 480px) {
+  .edit-modal-content {
+    padding: 20px 15px;
+  }
+
+  .edit-modal-content h2 {
+    font-size: 18px;
+  }
+
+  .edit-modal-content label {
+    font-size: 13px;
+  }
+}

@@ -19,19 +19,19 @@
 
   <main class="main-content">
     <header class="topbar">
-      <h1 class="titrepage">Site</h1>
+      <h1 class="titrepage">Identités visuelles</h1>
     </header>
 
     <!-- SECTION PORTFOLIO -->
     <section class="portfolio">
-      <h1 class="portfolio-title">Ajouter un site-web</h1>
+      <h1 class="portfolio-title">Ajouter une identité visuelle</h1>
  
      
-       <!-- AJOUT d'un site -->
-            <!-- section d'ajout de site -->
+       <!-- AJOUT d'une identité -->
+            <!-- section d'ajout d'identité -->
      <div class="portfolio-header">
      
-        <form id="portfolioForm" class="portfolio-form" method="POST" enctype="multipart/form-data">
+        <form id="identiteForm" class="portfolio-form" method="POST" enctype="multipart/form-data">
           <div class="form-group">
             <label for="clientName">Nom du client</label>
             <input type="text" id="clientName" placeholder="Ex: Alpha Group" required>
@@ -42,17 +42,11 @@
             <input type="month" id="dateRealisation" required>
           </div>
 
-          
           <div class="form-group">
-            <label for="contact">Contact / Email</label>
-            <input type="text" id="contact" placeholder="contact@client.com" required>
-          </div>
-
-          <div class="form-group">
-            <label for="image">Image du site</label>
+            <label for="image">Image de l'identité visuelle</label>
             <input type="file" id="image" accept="image/*" required>
           </div>
-           <button type="submit" id="addPortfolioBtn" class="btn-submit">
+           <button type="submit" id="addIdentiteBtn" class="btn-submit">
               <i class="fa-solid fa-paper-plane"></i> Enregistrer
            </button>
         </form>
@@ -61,7 +55,7 @@
         <!-- GRID -->
 
     <section>
-           <h1 class="portfolio-title">Site clients Ajoutés</h1>
+           <h1 class="portfolio-title">Identités visuelles ajoutées</h1>
     </section>
     
     <!-- FILTRES -->
@@ -93,28 +87,28 @@
     <Section>
       <div class="portfolio-grid" id="portfolioGrid">
         <?php
-        // Charger les sites depuis la base de données
+        // Charger les identités depuis la base de données
         require_once __DIR__ . '/../partials/connect.php';
         
-        $sites = [];
+        $identites = [];
         if (isset($connect) && $connect) {
-            $query = "SELECT * FROM sites ORDER BY date_realisation DESC";
+            $query = "SELECT * FROM identites ORDER BY date_realisation DESC";
             $result = mysqli_query($connect, $query);
             if ($result) {
                 while ($row = mysqli_fetch_assoc($result)) {
-                    $sites[] = $row;
+                    $identites[] = $row;
                 }
             }
         }
         
-        // Afficher les sites
-        if (!empty($sites)) {
-            foreach ($sites as $site) {
-                $id = htmlspecialchars($site['id'] ?? '', ENT_QUOTES, 'UTF-8');
-                $clientName = htmlspecialchars($site['client_name'] ?? '', ENT_QUOTES, 'UTF-8');
+        // Afficher les identités
+        if (!empty($identites)) {
+            foreach ($identites as $identite) {
+                $id = htmlspecialchars($identite['id'] ?? '', ENT_QUOTES, 'UTF-8');
+                $clientName = htmlspecialchars($identite['client_name'] ?? '', ENT_QUOTES, 'UTF-8');
                 
                 // Gérer la date
-                $dateStr = $site['date_realisation'] ?? '';
+                $dateStr = $identite['date_realisation'] ?? '';
                 $date = 'N/A';
                 if (!empty($dateStr)) {
                     $timestamp = strtotime($dateStr);
@@ -123,38 +117,44 @@
                     }
                 }
                 
-                $contact = htmlspecialchars($site['contact'] ?? '', ENT_QUOTES, 'UTF-8');
-                $imagePath = htmlspecialchars($site['image_path'] ?? '', ENT_QUOTES, 'UTF-8');
+                $imagePath = htmlspecialchars($identite['image_path'] ?? '', ENT_QUOTES, 'UTF-8');
                 
                 // Normaliser le chemin de l'image pour l'admin
                 if (!empty($imagePath)) {
+                    // Enlever le slash initial s'il existe
+                    $imagePath = ltrim($imagePath, '/');
+                    
                     // Si le chemin commence par "images/", garder tel quel
                     if (strpos($imagePath, 'images/') === 0) {
                         // Déjà correct
                     } 
                     // Si le chemin commence par "admin/images/", enlever "admin/"
                     elseif (strpos($imagePath, 'admin/images/') === 0) {
-                        $imagePath = str_replace('admin/', '', $imagePath);
+                        $imagePath = str_replace('admin/images/', 'images/', $imagePath);
                     }
                     // Sinon, supposer que c'est un chemin relatif depuis la racine admin
                     else {
-                        $imagePath = 'images/' . basename($imagePath);
+                        $imagePath = 'images/Admin/identités/' . basename($imagePath);
+                    }
+                    
+                    // Vérifier si le fichier existe réellement
+                    $fullPath = __DIR__ . '/' . $imagePath;
+                    if (!file_exists($fullPath)) {
+                        // Si l'image n'existe pas, utiliser une image par défaut
+                        $imagePath = 'images/Admin/affiches/Affiche6.jpg'; // Utiliser une affiche par défaut
                     }
                 } else {
-                    $imagePath = 'images/Admin/sites/default.jpg'; // Image par défaut
+                    $imagePath = 'images/Admin/affiches/Affiche6.jpg'; // Image par défaut
                 }
                 ?>
                 <div class="portfolio-card" data-id="<?php echo $id; ?>">
                   <img src="<?php echo $imagePath; ?>" 
-                       alt="Site Web <?php echo $clientName; ?>" 
+                       alt="Identité visuelle <?php echo $clientName; ?>" 
                        class="portfolio-img"
-                       onerror="this.src='images/Admin/sites/agri.jpeg'; this.onerror=null;">
+                       onerror="this.src='images/Admin/affiches/Affiche6.jpg'; this.onerror=null;">
                   <div class="portfolio-info">
                     <h3>Client : <?php echo $clientName; ?></h3>
                     <p><i class="fa-solid fa-calendar"></i> Date : <?php echo $date; ?></p>
-                    <?php if (!empty($contact)): ?>
-                    <p><i class="fa-solid fa-envelope"></i> Contact : <?php echo $contact; ?></p>
-                    <?php endif; ?>
 
                     <!-- Actions -->
                     <div class="portfolio-actions">
@@ -168,8 +168,8 @@
         } else {
             ?>
             <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">
-              <p style="font-size: 18px;">Aucun site web ajouté pour le moment.</p>
-              <p style="font-size: 14px; margin-top: 10px;">Utilisez le formulaire ci-dessus pour ajouter votre premier site.</p>
+              <p style="font-size: 18px;">Aucune identité visuelle ajoutée pour le moment.</p>
+              <p style="font-size: 14px; margin-top: 10px;">Utilisez le formulaire ci-dessus pour ajouter votre première identité visuelle.</p>
             </div>
             <?php
         }
@@ -190,7 +190,7 @@
 <div id="editModal" class="edit-modal">
   <div class="edit-modal-content">
     <span class="close-edit">&times;</span>
-    <h2>Modifier le Portfolio</h2>
+    <h2>Modifier l'identité visuelle</h2>
 
     <form id="editForm">
       <div class="form-group">
@@ -201,11 +201,6 @@
       <div class="form-group">
         <label for="editDate">Date de réalisation</label>
         <input type="month" id="editDate" required>
-      </div>
-
-      <div class="form-group">
-        <label for="editEmail">Email / Contact</label>
-        <input type="text" id="editEmail" required>
       </div>
 
       <div class="form-group">
@@ -241,12 +236,13 @@
   </script> 
   
   <script src="js/script.js"></script>
-   <script src="js/Ajout.js"></script>
+   <script src="js/Ajout_identite.js"></script>
    <script src="js/sibebar.js"></script>
    <script src="js/active_sidebar.js"></script>
   <script src="js/Supprimer_Info.js"></script>
-  <script src="js/Modifier_info.js"></script>
+  <script src="js/Modifier_identite.js"></script>
   <script src="js/Filtre_portfolio.js"></script>
 
 </body>
 </html>
+

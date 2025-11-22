@@ -42,7 +42,7 @@ if (!empty($errors)) {
 }
 
 // Upload de l'image
-$uploadDir = __DIR__ . '/../../images/Admin/affiches/';
+$uploadDir = __DIR__ . '/../images/Admin/affiches/';
 if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0755, true);
 }
