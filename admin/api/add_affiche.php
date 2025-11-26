@@ -30,10 +30,24 @@ $clientName = trim($_POST['clientAffiche'] ?? '');
 $dateRealisation = $_POST['dateAffiche'] ?? '';
 $imageFile = $_FILES['imageAffiche'] ?? null;
 
+// Debug: logger les données reçues
+error_log("API add_affiche - clientAffiche: " . $clientName);
+error_log("API add_affiche - dateAffiche: " . $dateRealisation);
+error_log("API add_affiche - imageAffiche: " . ($imageFile ? 'présent' : 'absent'));
+if ($imageFile) {
+    error_log("API add_affiche - image error: " . $imageFile['error']);
+}
+
 $errors = [];
 if (empty($clientName)) $errors[] = 'Le nom du client est requis';
 if (empty($dateRealisation)) $errors[] = 'La date de réalisation est requise';
-if (!$imageFile || $imageFile['error'] !== UPLOAD_ERR_OK) $errors[] = 'L\'image est requise';
+if (!$imageFile || $imageFile['error'] !== UPLOAD_ERR_OK) {
+    $errorMsg = 'L\'image est requise';
+    if ($imageFile && $imageFile['error'] !== UPLOAD_ERR_OK) {
+        $errorMsg .= ' (erreur upload: ' . $imageFile['error'] . ')';
+    }
+    $errors[] = $errorMsg;
+}
 
 if (!empty($errors)) {
     http_response_code(400);

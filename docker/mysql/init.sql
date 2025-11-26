@@ -24,9 +24,11 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(100) NOT NULL UNIQUE,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
+    role ENUM('admin', 'user') DEFAULT 'user',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_username (username),
-    INDEX idx_email (email)
+    INDEX idx_email (email),
+    INDEX idx_role (role)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -175,8 +177,9 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 -- Insérer un utilisateur admin par défaut (mot de passe: admin123)
 -- ⚠️ À changer en production !
-INSERT INTO users (username, email, password) VALUES 
-('admin', 'admin@orume.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi')
+-- Hash bcrypt pour "admin123"
+INSERT INTO users (username, email, password, role) VALUES 
+('admin', 'admin@orume.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin')
 ON DUPLICATE KEY UPDATE username=username;
 
 -- Message de confirmation

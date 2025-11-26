@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="css/Portfolio.css">
   <link rel="stylesheet" href="css/Messages.css">
   <link rel="stylesheet" href="css/modifier_Info_affiche.css">
+  <link rel="stylesheet" href="css/Utilisateurs.css">
+  <link rel="stylesheet" href="css/index.css">
    
 
   <!-- Font Awesome (icônes) -->

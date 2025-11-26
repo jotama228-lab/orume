@@ -9,6 +9,8 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #333;
   line-height: 1.6;
+  background: #fff;
+  background-image: none;
 }
 
 /* ===== HERO BACKGROUND ===== */
@@ -16,6 +18,20 @@ body {
   background: url('../img/background.PNG') no-repeat center center/cover;
   position: relative;
   padding: 80px 2%;
+}
+
+/* Désactiver le background-image du hero sur les pages portfolio */
+/* Utiliser une classe spécifique pour les pages portfolio */
+.portfolio-page .hero {
+  background: #fff !important;
+  background-image: none !important;
+}
+
+/* Alternative avec :has() pour les navigateurs modernes */
+body:has(.portfolio-section) .hero,
+body:has(.banner-section) .hero {
+  background: #fff !important;
+  background-image: none !important;
 }
 
 /* Overlay sombre */
@@ -503,10 +519,17 @@ body {
 /* Grille */
 .portfolio-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   align-items: start;
   margin-bottom: 40px;
+}
+
+@media (max-width: 1200px) {
+  .portfolio-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
 }
 
 @media (max-width: 900px) {
@@ -549,7 +572,8 @@ body {
 /* filtre card portfolio */
 /* Styles pour les boutons de filtre */
 .filter-buttons button,
-.filter-buttons .filter-btn {
+.filter-buttons .filter-btn,
+.filter-buttons a.filter-btn {
   background: transparent;
   border: 2px solid #0e5739;
   color: #0e5739;
@@ -573,19 +597,22 @@ body {
 }
 
 .filter-buttons button.active,
-.filter-buttons .filter-btn.active {
+.filter-buttons .filter-btn.active,
+.filter-buttons a.filter-btn.active {
   background-color: #0e5739;
   color: white;
   border-color: #0e5739;
 }
 
 .filter-buttons button:hover,
-.filter-buttons .filter-btn:hover {
+.filter-buttons .filter-btn:hover,
+.filter-buttons a.filter-btn:hover {
   background-color: #0e5739;
   color: white;
   border-color: #0e5739;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(14, 87, 57, 0.2);
+  text-decoration: none;
 }
 
 /* Animation d’apparition */
@@ -685,14 +712,14 @@ body {
 
 /* Section portfolio */
 .portfolio-section {
-  background: #fff;
+  background: #fff !important;
+  background-image: none !important;
 }
 
 /* Container centré */
 .portfolio-conteneur {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 80px 8%;
   padding-bottom: 200px !important;
 }
 
@@ -736,10 +763,10 @@ body {
 
 /* Styles pour les boutons de filtre - déjà défini plus haut */
 
-/* --- GRILLE (3 colonnes desktop) --- */
+/* --- GRILLE (4 colonnes desktop) --- */
 .portfolo-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   align-items: start;
   margin-bottom: 40px;
@@ -792,6 +819,13 @@ body {
 }
 
 /* --- Responsive --- */
+@media (max-width: 1200px) {
+  .portfolo-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+}
+
 @media (max-width: 900px) {
   .portfolo-grid {
     grid-template-columns: repeat(2, 1fr);

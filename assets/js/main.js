@@ -56,19 +56,25 @@ document.addEventListener('DOMContentLoaded', function() {
   let currentIndex = 0;
 
   // --- FILTRAGE ---
-  if (buttons.length > 0) {
+  if (buttons.length > 0 && items.length > 0) {
     buttons.forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
         buttons.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
 
         const filter = btn.getAttribute('data-filter');
-        if (items.length > 0) {
+        if (filter) {
           items.forEach(item => {
             if (filter === 'all' || item.classList.contains(filter)) {
-              item.style.display = 'block';
+              item.classList.remove('hide');
+              item.style.display = '';
+              item.style.visibility = '';
+              item.style.opacity = '';
             } else {
-              item.style.display = 'none';
+              item.classList.add('hide');
             }
           });
         }

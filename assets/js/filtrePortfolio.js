@@ -16,6 +16,30 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("[filtrePortfolio] Script chargé");
     
     /**
+     * Récupérer le paramètre de filtre depuis l'URL
+     * @returns {string} Le filtre actif ("all", "sites", "shooting", "identite", "affiches")
+     */
+    function getFilterFromURL() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const filter = urlParams.get('filter') || 'all';
+        const validFilters = ['all', 'sites', 'shooting', 'identite', 'affiches'];
+        return validFilters.includes(filter) ? filter : 'all';
+    }
+    
+    /**
+     * Mettre à jour l'URL avec le nouveau filtre (sans rechargement)
+     * @param {string} filter - Le filtre à appliquer
+     */
+    function updateURL(filter) {
+        const newURL = filter === 'all' 
+            ? window.location.pathname 
+            : `${window.location.pathname}?filter=${filter}`;
+        
+        // Utiliser l'History API pour mettre à jour l'URL sans rechargement
+        window.history.pushState({ filter: filter }, '', newURL);
+    }
+    
+    /**
      * Récupérer tous les boutons de filtre
      * @type {Array<HTMLElement>}
      */
@@ -52,9 +76,15 @@ document.addEventListener("DOMContentLoaded", () => {
      * Afficher les éléments d'une catégorie spécifique
      * 
      * @param {string} category - Catégorie à afficher ("all", "sites", "shooting", etc.)
+     * @param {boolean} updateURLParam - Si true, met à jour l'URL (défaut: true)
      */
-    function showCategory(category) {
+    function showCategory(category, updateURLParam = true) {
         console.log(`[filtrePortfolio] Affichage de la catégorie: ${category}`);
+        
+        // Mettre à jour l'URL si demandé
+        if (updateURLParam) {
+            updateURL(category);
+        }
         
         // Mettre à jour l'état actif des boutons
         filterButtons.forEach(btn => {
@@ -130,10 +160,19 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             
             console.log(`[filtrePortfolio] Clic sur le bouton: ${filter}`);
-            showCategory(filter);
+            showCategory(filter, true);
         });
     });
 
-    // Afficher tous les éléments par défaut au chargement
-    showCategory("all");
+    // Gérer les changements d'URL (bouton retour/avant du navigateur)
+    window.addEventListener('popstate', (e) => {
+        const filter = e.state && e.state.filter ? e.state.filter : getFilterFromURL();
+        console.log(`[filtrePortfolio] Changement d'URL détecté, filtre: ${filter}`);
+        showCategory(filter, false); // Ne pas mettre à jour l'URL car elle vient de changer
+    });
+
+    // Appliquer le filtre depuis l'URL au chargement initial
+    const initialFilter = getFilterFromURL();
+    console.log(`[filtrePortfolio] Filtre initial depuis l'URL: ${initialFilter}`);
+    showCategory(initialFilter, false); // Ne pas mettre à jour l'URL car c'est le chargement initial
 });

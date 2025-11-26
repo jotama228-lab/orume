@@ -26,10 +26,10 @@
         <li class="dropdown">
       <a href="portfolio.php" <?php echo (strpos(basename($_SERVER['PHP_SELF']), 'portfolio') !== false) ? 'class="active"' : ''; ?>>Portfolio ▼</a>
       <ul class="dropdown-menu">
-        <li><a href="portfolio-sites.php">Sites</a></li>
-        <li><a href="portfolio-affiches.php">Affiches</a></li>
-        <li><a href="portfolio-identite.php">Identité visuelle</a></li>
-        <li><a href="portfolio-shooting.php">Shooting</a></li>
+        <li><a href="portfolio.php?filter=sites">Sites</a></li>
+        <li><a href="portfolio.php?filter=affiches">Affiches</a></li>
+        <li><a href="portfolio.php?filter=identite">Identité visuelle</a></li>
+        <li><a href="portfolio.php?filter=shooting">Shooting</a></li>
       </ul>
     </li>
         <li><a href="contact.php" <?php echo (basename($_SERVER['PHP_SELF']) == 'contact.php') ? 'class="active"' : ''; ?>>Contact</a></li>

@@ -1,10 +1,9 @@
+<?php
+require_once __DIR__ . '/auth.php';
+include'adminpartials/head.php'
+?>
 <!DOCTYPE html>
 <html lang="fr">
-
-
-<?php
-    include'adminpartials/head.php'
-?>
 
 
 <body>
