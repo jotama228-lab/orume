@@ -1,10 +1,9 @@
+<?php
+require_once __DIR__ . '/auth.php';
+include'adminpartials/head.php'
+?>
 <!DOCTYPE html>
 <html lang="fr">
-
-
-<?php
-    include'adminpartials/head.php'
-?>
 
 
 <body>
@@ -63,8 +62,35 @@
     <section>
            <h1 class="portfolio-title">Site clients Ajoutés</h1>
     </section>
+    
+    <!-- FILTRES -->
+    <section class="filters-section">
+      <div class="filters-container">
+        <div class="filter-group">
+          <label for="filterClient"><i class="fa-solid fa-magnifying-glass"></i> Rechercher par client</label>
+          <input type="text" id="filterClient" class="filter-input" placeholder="Nom du client...">
+        </div>
+        <div class="filter-group">
+          <label for="filterDate"><i class="fa-solid fa-calendar"></i> Filtrer par date</label>
+          <input type="month" id="filterDate" class="filter-input">
+        </div>
+        <div class="filter-group">
+          <label for="sortOrder"><i class="fa-solid fa-sort"></i> Trier par</label>
+          <select id="sortOrder" class="filter-input">
+            <option value="desc">Date récente → ancienne</option>
+            <option value="asc">Date ancienne → récente</option>
+            <option value="name-asc">Nom A → Z</option>
+            <option value="name-desc">Nom Z → A</option>
+          </select>
+        </div>
+        <button id="resetFilters" class="btn-reset-filters">
+          <i class="fa-solid fa-rotate-left"></i> Réinitialiser
+        </button>
+      </div>
+    </section>
+    
     <Section>
-      <div class="portfolio-grid">
+      <div class="portfolio-grid" id="portfolioGrid">
         <?php
         // Charger les sites depuis la base de données
         require_once __DIR__ . '/../partials/connect.php';
@@ -216,8 +242,10 @@
   <script src="js/script.js"></script>
    <script src="js/Ajout.js"></script>
    <script src="js/sibebar.js"></script>
+   <script src="js/active_sidebar.js"></script>
   <script src="js/Supprimer_Info.js"></script>
   <script src="js/Modifier_info.js"></script>
+  <script src="js/Filtre_portfolio.js"></script>
 
 </body>
 </html>

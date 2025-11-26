@@ -40,8 +40,8 @@ $query = "DELETE FROM affiches WHERE id = $id";
 
 if (mysqli_query($connect, $query)) {
     // Supprimer l'image
-    if ($imagePath && file_exists(__DIR__ . '/../../' . $imagePath)) {
-        @unlink(__DIR__ . '/../../' . $imagePath);
+    if ($imagePath && file_exists(__DIR__ . '/../' . $imagePath)) {
+        @unlink(__DIR__ . '/../' . $imagePath);
     }
     echo json_encode(['success' => true, 'message' => 'Affiche supprimée avec succès']);
 } else {

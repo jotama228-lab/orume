@@ -47,8 +47,8 @@ $query = "DELETE FROM sites WHERE id = $id";
 
 if (mysqli_query($connect, $query)) {
     // Supprimer l'image si elle existe
-    if ($imagePath && file_exists(__DIR__ . '/../../' . $imagePath)) {
-        @unlink(__DIR__ . '/../../' . $imagePath);
+    if ($imagePath && file_exists(__DIR__ . '/../' . $imagePath)) {
+        @unlink(__DIR__ . '/../' . $imagePath);
     }
     
     echo json_encode(['success' => true, 'message' => 'Site supprimé avec succès']);

@@ -19,12 +19,31 @@ document.addEventListener("DOMContentLoaded", function() {
      * @type {NodeList}
      */
     const deleteButtons = document.querySelectorAll(".btn-delete");
+    
+    // Debug: vérifier si les boutons sont trouvés
+    console.log("Nombre de boutons supprimer trouvés:", deleteButtons.length);
+    
+    if (deleteButtons.length === 0) {
+        console.warn("⚠️ Aucun bouton .btn-delete trouvé dans la page");
+        // Réessayer après un court délai
+        setTimeout(() => {
+            const retryButtons = document.querySelectorAll(".btn-delete");
+            console.log("Réessai - Nombre de boutons trouvés:", retryButtons.length);
+            if (retryButtons.length > 0) {
+                retryButtons.forEach(btn => attachDeleteListener(btn));
+            }
+        }, 500);
+        return;
+    }
 
     /**
-     * Ajouter un écouteur d'événement à chaque bouton de suppression
+     * Fonction pour attacher l'écouteur d'événement
      */
-    deleteButtons.forEach(btn => {
-        btn.addEventListener("click", function() {
+    function attachDeleteListener(btn) {
+        btn.addEventListener("click", function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log("Bouton supprimer cliqué, ID:", this.getAttribute('data-id'));
             // Demander confirmation avant suppression
             if (confirm("Voulez-vous vraiment supprimer cet élément ?")) {
                 // Récupérer la carte parente et l'ID
@@ -50,10 +69,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 
                 // Appel API pour supprimer en base de données
                 fetch(`api/${apiEndpoint}?id=${id}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
+                    method: 'POST'
                 })
                 .then(res => res.json())
                 .then(data => {
@@ -74,5 +90,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 });
             }
         });
+    }
+    
+    /**
+     * Ajouter un écouteur d'événement à chaque bouton de suppression
+     */
+    deleteButtons.forEach(btn => {
+        attachDeleteListener(btn);
     });
 });

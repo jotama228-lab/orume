@@ -1,3 +1,6 @@
+<?php
+// La session est déjà démarrée par auth.php
+?>
  <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
@@ -24,7 +27,7 @@
         <span class="icon"><i class="fas fa-image"></i></span>
         <span class="text">Affiches</span>
       </a>
-      <a href="identités.php"class="activeIdentité">
+      <a href="identites.php" class="activeIdentité">
         <span class="icon"><i class="fas fa-id-card icon"></i></span>
         <span class="text">Identités visuelles</span>
       </a>
@@ -32,9 +35,18 @@
         <span class="icon"><i class="fa-solid fa-camera"></i></span>
         <span class="text">Shooting</span>
       </a>
-      <a href=".php">
-        <span class="icon"><i class="fa-solid fa-arrow-left"></i></span>
-        <span class="text">Quitter</span>
+      <?php
+      // Afficher le lien Utilisateurs uniquement pour les admins
+      if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+          echo '<a href="utilisateurs.php" class="activeUtilisateurs">';
+          echo '<span class="icon"><i class="fas fa-users"></i></span>';
+          echo '<span class="text">Utilisateurs</span>';
+          echo '</a>';
+      }
+      ?>
+      <a href="logout.php" class="btn-quitter">
+        <span class="icon"><i class="fa-solid fa-sign-out-alt"></i></span>
+        <span class="text">Déconnexion</span>
       </a>
     </nav>
   </aside>

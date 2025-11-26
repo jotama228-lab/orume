@@ -47,7 +47,7 @@ if (!empty($errors)) {
 }
 
 // Upload de l'image
-$uploadDir = __DIR__ . '/../../images/Admin/sites/';
+$uploadDir = __DIR__ . '/../images/Admin/sites/';
 if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0755, true);
 }

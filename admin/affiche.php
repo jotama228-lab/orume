@@ -1,9 +1,9 @@
+<?php
+require_once __DIR__ . '/auth.php';
+include'adminpartials/head.php'
+?>
 <!DOCTYPE html>
 <html lang="fr">
-
-<?php
-    include'adminpartials/head.php'
-?>
 
 
 <body>
@@ -22,7 +22,7 @@
 
       <!-- FORMULAIRE D’AJOUT -->
       <div class="portfolio-header">
-        <form id="afficheForm" class="portfolio-form">
+        <form id="afficheForm" class="portfolio-form" method="POST" enctype="multipart/form-data">
           <div class="form-group">
             <label for="clientAffiche">Nom du client</label>
             <input type="text" id="clientAffiche" placeholder="Ex: Maison Luxe" required>
@@ -49,8 +49,34 @@
         <h1 class="portfolio-title">Affiches Réalisées</h1>
       </section>
 
+      <!-- FILTRES -->
+      <section class="filters-section">
+        <div class="filters-container">
+          <div class="filter-group">
+            <label for="filterClient"><i class="fa-solid fa-magnifying-glass"></i> Rechercher par client</label>
+            <input type="text" id="filterClient" class="filter-input" placeholder="Nom du client...">
+          </div>
+          <div class="filter-group">
+            <label for="filterDate"><i class="fa-solid fa-calendar"></i> Filtrer par date</label>
+            <input type="month" id="filterDate" class="filter-input">
+          </div>
+          <div class="filter-group">
+            <label for="sortOrder"><i class="fa-solid fa-sort"></i> Trier par</label>
+            <select id="sortOrder" class="filter-input">
+              <option value="desc">Date récente → ancienne</option>
+              <option value="asc">Date ancienne → récente</option>
+              <option value="name-asc">Nom A → Z</option>
+              <option value="name-desc">Nom Z → A</option>
+            </select>
+          </div>
+          <button id="resetFilters" class="btn-reset-filters">
+            <i class="fa-solid fa-rotate-left"></i> Réinitialiser
+          </button>
+        </div>
+      </section>
+
       <!-- CARTES D'AFFICHES -->
-      <div class="portfolio-grid" id="afficheContainer">
+      <div class="portfolio-grid" id="portfolioGrid">
         <?php
         // Charger les affiches depuis la base de données
         require_once __DIR__ . '/../partials/connect.php';
@@ -80,9 +106,39 @@
                 } elseif (strpos($imagePath, 'admin/images/') === 0) {
                     $imagePath = str_replace('admin/images/', 'images/', $imagePath);
                 }
+                
+                // Vérifier si l'image existe
+                $fullImagePath = __DIR__ . '/../' . $imagePath;
+                $imageExists = file_exists($fullImagePath);
+                
+                if (!$imageExists) {
+                    // Essayer de trouver l'image dans assets/img
+                    $imageName = basename($imagePath);
+                    $assetsPath = __DIR__ . '/../../assets/img/' . $imageName;
+                    if (file_exists($assetsPath)) {
+                        $imagePath = 'assets/img/' . $imageName;
+                        $imageExists = true;
+                    } else {
+                        // Essayer dans admin/images/Admin/affiches/
+                        $adminPath = __DIR__ . '/images/Admin/affiches/' . $imageName;
+                        if (file_exists($adminPath)) {
+                            $imagePath = 'images/Admin/affiches/' . $imageName;
+                            $imageExists = true;
+                        }
+                    }
+                }
                 ?>
                 <div class="portfolio-card" data-id="<?php echo $id; ?>">
-                  <img src="<?php echo $imagePath; ?>" alt="Affiche <?php echo $clientName; ?>" class="portfolio-img">
+                  <?php if ($imageExists): ?>
+                    <img src="<?php echo $imagePath; ?>" alt="Affiche <?php echo $clientName; ?>" class="portfolio-img">
+                  <?php else: ?>
+                    <div style="width:100%; height:200px; background:#f0f0f0; display:flex; align-items:center; justify-content:center; color:#999;">
+                      <div style="text-align:center;">
+                        <i class="fas fa-image" style="font-size:3em; margin-bottom:10px; display:block;"></i>
+                        <p>Image non disponible</p>
+                      </div>
+                    </div>
+                  <?php endif; ?>
                   <div class="portfolio-info">
                     <h3>Client : <?php echo $clientName; ?></h3>
                     <p><i class="fa-solid fa-calendar"></i> Date : <?php echo $date; ?></p>
@@ -132,10 +188,7 @@
           <input type="month" id="editDateAffiche" required>
         </div>
 
-        <div class="form-group">
-          <label for="editEmailAffiche">Email / Contact</label>
-          <input type="text" id="editEmailAffiche" required>
-        </div>
+        <!-- Les affiches n'ont pas de champ email/contact -->
 
         <div class="form-group">
           <label for="editImageAffiche">Changer l’image (optionnel)</label>
@@ -171,7 +224,10 @@
   
   <!-- SCRIPTS -->
   <script src="js/sibebar.js"></script>
-  <script src="js/modifier_info_affiche.js"></script>
+   <script src="js/active_sidebar.js"></script>
+  <script src="js/Ajout.js"></script>
+  <script src="js/Modifier_info_affiche.js"></script>
   <script src="js/Supprimer_affiche.js"></script>
+  <script src="js/Filtre_portfolio.js"></script>
 </body>
 </html>

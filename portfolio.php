@@ -2,6 +2,16 @@
 <html lang="fr">
 <?php
 include 'partials/head.php';
+
+// Récupérer le paramètre de filtre depuis l'URL
+$filterParam = isset($_GET['filter']) ? trim($_GET['filter']) : 'all';
+$validFilters = ['all', 'sites', 'shooting', 'identite', 'affiches'];
+if (!in_array($filterParam, $validFilters)) {
+    $filterParam = 'all';
+}
+
+// Déterminer quel bouton doit être actif
+$activeFilter = $filterParam;
 ?>
 <br>
 <br>
@@ -17,13 +27,26 @@ include 'partials/head.php';
   <div class="portfolio-conteneur">
     <div class="filter-row">
       <div class="filter-buttons">
-        <button onclick="window.location.href='portfolio.php'" class="filter-btn <?php echo basename($_SERVER['PHP_SELF']) == 'portfolio.php' ? 'active' : ''; ?>">Tout</button>
-        <button onclick="window.location.href='portfolio-sites.php'" class="filter-btn <?php echo basename($_SERVER['PHP_SELF']) == 'portfolio-sites.php' ? 'active' : ''; ?>">Sites</button>
-        <button onclick="window.location.href='portfolio-shooting.php'" class="filter-btn <?php echo basename($_SERVER['PHP_SELF']) == 'portfolio-shooting.php' ? 'active' : ''; ?>">Shooting</button>
-        <button onclick="window.location.href='portfolio-identite.php'" class="filter-btn <?php echo basename($_SERVER['PHP_SELF']) == 'portfolio-identite.php' ? 'active' : ''; ?>">Identité visuelle</button>
-        <button onclick="window.location.href='portfolio-affiches.php'" class="filter-btn <?php echo basename($_SERVER['PHP_SELF']) == 'portfolio-affiches.php' ? 'active' : ''; ?>">Affiches</button>
+        <button data-filter="all" class="filter-btn <?php echo $activeFilter === 'all' ? 'active' : ''; ?>">Tout</button>
+        <button data-filter="sites" class="filter-btn <?php echo $activeFilter === 'sites' ? 'active' : ''; ?>">Sites</button>
+        <button data-filter="shooting" class="filter-btn <?php echo $activeFilter === 'shooting' ? 'active' : ''; ?>">Shooting</button>
+        <button data-filter="identite" class="filter-btn <?php echo $activeFilter === 'identite' ? 'active' : ''; ?>">Identité visuelle</button>
+        <button data-filter="affiches" class="filter-btn <?php echo $activeFilter === 'affiches' ? 'active' : ''; ?>">Affiches</button>
       </div>
     </div>
+
+    <?php
+    // Déterminer le titre selon le filtre actif
+    $titles = [
+        'all' => 'Notre Portfolio',
+        'sites' => 'Nos Sites Web',
+        'shooting' => 'Nos Shootings',
+        'identite' => 'Nos Identités Visuelles',
+        'affiches' => 'Nos Affiches'
+    ];
+    $pageTitle = $titles[$activeFilter] ?? 'Notre Portfolio';
+    ?>
+    <h2 class="portfolio-title"><?php echo htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8'); ?></h2>
 
     <div class="portfolio-grid">
       <?php
@@ -126,8 +149,13 @@ include 'partials/head.php';
                   ];
                   $imagePath = $fallbackPaths[$type] ?? '/assets/img/logo-acceuil.png';
               }
+              // Déterminer si cet élément doit être masqué initialement selon le filtre URL
+              $shouldHide = false;
+              if ($filterParam !== 'all' && $type !== $filterParam) {
+                  $shouldHide = true;
+              }
               ?>
-              <div class="item <?php echo htmlspecialchars($type, ENT_QUOTES, 'UTF-8'); ?>">
+              <div class="item <?php echo htmlspecialchars($type, ENT_QUOTES, 'UTF-8'); ?><?php echo $shouldHide ? ' hide' : ''; ?>">
                 <img src="<?php echo $imagePath; ?>" 
                      alt="<?php echo $clientName; ?>" 
                      class="portfolio-item-img"
@@ -137,14 +165,29 @@ include 'partials/head.php';
           }
       } else {
           // Données par défaut si la BDD n'est pas disponible
-          ?>
-          <div class="item sites"><img src="/assets/img/afiche1.jpg" alt="Site web" class="portfolio-item-img" onerror="this.src='/assets/img/logo-acceuil.png'; this.onerror=null;"></div>
-          <div class="item shooting"><img src="/assets/img/afiche1.jpg" alt="Shooting" class="portfolio-item-img" onerror="this.src='/assets/img/logo-acceuil.png'; this.onerror=null;"></div>
-          <div class="item identite"><img src="/assets/img/Affiche6.jpg" alt="Identité visuelle" class="portfolio-item-img" onerror="this.src='/assets/img/logo-acceuil.png'; this.onerror=null;"></div>
-          <div class="item affiches"><img src="/assets/img/Affiche6.jpg" alt="Affiche" class="portfolio-item-img" onerror="this.src='/assets/img/logo-acceuil.png'; this.onerror=null;"></div>
-          <div class="item sites"><img src="/assets/img/Affiche5.jpg" alt="Site web" class="portfolio-item-img" onerror="this.src='/assets/img/logo-acceuil.png'; this.onerror=null;"></div>
-          <div class="item affiches"><img src="/assets/img/Affiche6.jpg" alt="Affiche" class="portfolio-item-img" onerror="this.src='/assets/img/logo-acceuil.png'; this.onerror=null;"></div>
-          <?php
+          $defaultItems = [
+              ['type' => 'sites', 'src' => '/assets/img/afiche1.jpg', 'alt' => 'Site web'],
+              ['type' => 'shooting', 'src' => '/assets/img/afiche1.jpg', 'alt' => 'Shooting'],
+              ['type' => 'identite', 'src' => '/assets/img/Affiche6.jpg', 'alt' => 'Identité visuelle'],
+              ['type' => 'affiches', 'src' => '/assets/img/Affiche6.jpg', 'alt' => 'Affiche'],
+              ['type' => 'sites', 'src' => '/assets/img/Affiche5.jpg', 'alt' => 'Site web'],
+              ['type' => 'affiches', 'src' => '/assets/img/Affiche6.jpg', 'alt' => 'Affiche']
+          ];
+          
+          foreach ($defaultItems as $defaultItem) {
+              $shouldHide = false;
+              if ($filterParam !== 'all' && $defaultItem['type'] !== $filterParam) {
+                  $shouldHide = true;
+              }
+              ?>
+              <div class="item <?php echo $defaultItem['type']; ?><?php echo $shouldHide ? ' hide' : ''; ?>">
+                  <img src="<?php echo $defaultItem['src']; ?>" 
+                       alt="<?php echo $defaultItem['alt']; ?>" 
+                       class="portfolio-item-img" 
+                       onerror="this.src='/assets/img/logo-acceuil.png'; this.onerror=null;">
+              </div>
+              <?php
+          }
       }
       ?>
     </div>
@@ -274,8 +317,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-<!-- Script de filtrage désactivé car on utilise des liens maintenant -->
-<!-- <script src="assets/js/filtrePortfolio.js"></script> --> 
+<!-- Script de filtrage -->
+<script src="assets/js/filtrePortfolio.js"></script> 
 
 
 </body>
