@@ -68,7 +68,9 @@ services:
 
   # Service pour exécuter le seeder automatiquement si la DB est vide
   seeder:
-    image: php:8.2-cli
+    build:
+      context: .
+      dockerfile: Dockerfile.seeder
     container_name: orume_seeder
     depends_on:
       db:
