@@ -27,7 +27,7 @@
         <h5>Liens</h5>
         <ul>
           <li><a href="acceuil.php">Nous</a></li>
-          <li><a href="#">Services</a></li>
+          <li><a href="services.php">Services</a></li>
           <li><a href="portfolio.php">Porfolio</a></li>
           <li><a href="contact.php">Contact</a></li>
         </ul>

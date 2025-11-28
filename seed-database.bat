@@ -30,10 +30,10 @@ if errorlevel 1 (
     echo.
     echo Repartition :
     echo   - 20 messages
-    echo   - 50 sites web
-    echo   - 50 affiches
-    echo   - 50 identites visuelles
-    echo   - 50 shootings
+    echo   - 28 sites web
+    echo   - 35 affiches
+    echo   - 30 identites visuelles
+    echo   - 30 shootings
 )
 
 pause
