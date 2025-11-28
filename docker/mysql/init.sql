@@ -179,7 +179,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- ⚠️ À changer en production !
 -- Hash bcrypt pour "admin123"
 INSERT INTO users (username, email, password, role) VALUES 
-('admin', 'admin@orume.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin')
+('admin', 'admin@orume.com', '$2y$10$v5HqkpgEPTXDi2rD0deKCu880i3dEGqq9nJd0j4K4AOF1JODroQv6', 'admin')
 ON DUPLICATE KEY UPDATE username=username;
 
 -- Message de confirmation
