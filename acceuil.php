@@ -77,7 +77,7 @@
       <span class="subtitle">Services</span>
       <h2>que nous <span>offrons</span></h2>
     </div>
-    <a href="#services" class="btn-services">Nos services</a>
+    <a href="services.php" class="btn-services">Nos services</a>
   </div>
 
   <div class="services-grid">

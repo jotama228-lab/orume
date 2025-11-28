@@ -59,7 +59,19 @@ BEGIN
         ('Rokhaya Diop', 'rokhaya.diop@example.com', 'Charte graphique', 'Élaboration d\'une charte graphique complète.', 'lu', NOW() - INTERVAL 18 DAY),
         ('Antoine Leroy', 'antoine.leroy@example.com', 'Site institutionnel', 'Création d\'un site institutionnel.', 'non_lu', NOW() - INTERVAL 19 DAY),
         ('Ndeye Fall', 'ndeye.fall@example.com', 'Photographie produit', 'Shooting photo pour catalogue produits.', 'lu', NOW() - INTERVAL 20 DAY);
-    END IF;
+    END IF;  
+
+    -- Table des messages (formulaire de contact)
+CREATE TABLE IF NOT EXISTS messages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    sujet VARCHAR(255),
+    message TEXT NOT NULL,
+    statut ENUM('non_lu', 'lu', 'repondu') DEFAULT 'non_lu',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
     
     -- Insérer les sites seulement si la table est vide
     IF sites_count = 0 THEN
