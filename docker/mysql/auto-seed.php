@@ -74,21 +74,42 @@ function executeSQLFile($conn, $filePath) {
         return false;
     }
     
-    if ($conn->multi_query($sql)) {
-        do {
-            if ($result = $conn->store_result()) {
-                $result->free();
+    // Pour les fichiers avec DELIMITER (procédures stockées), utiliser multi_query
+    // Sinon, diviser par point-virgule et exécuter chaque requête séparément
+    if (strpos($sql, 'DELIMITER') !== false) {
+        // Fichier avec procédures stockées - utiliser multi_query
+        if ($conn->multi_query($sql)) {
+            do {
+                if ($result = $conn->store_result()) {
+                    $result->free();
+                }
+            } while ($conn->next_result());
+            
+            if ($conn->errno) {
+                echo "⚠️  Erreur SQL: " . $conn->error . " (Code: " . $conn->errno . ")\n";
+                return false;
             }
-        } while ($conn->next_result());
-        
-        if ($conn->errno) {
-            echo "⚠️  Erreur SQL: " . $conn->error . " (Code: " . $conn->errno . ")\n";
+            return true;
+        } else {
+            echo "⚠️  Erreur lors de l'exécution: " . $conn->error . " (Code: " . $conn->errno . ")\n";
             return false;
         }
-        return true;
     } else {
-        echo "⚠️  Erreur lors de l'exécution: " . $conn->error . " (Code: " . $conn->errno . ")\n";
-        return false;
+        // Fichier simple - diviser par point-virgule
+        $queries = array_filter(array_map('trim', explode(';', $sql)), function($q) {
+            return !empty($q) && !preg_match('/^--/', $q) && !preg_match('/^\/\*/', $q);
+        });
+        
+        foreach ($queries as $query) {
+            if (!empty(trim($query))) {
+                if (!$conn->query($query)) {
+                    echo "⚠️  Erreur SQL: " . $conn->error . " (Code: " . $conn->errno . ")\n";
+                    echo "   Requête: " . substr($query, 0, 100) . "...\n";
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
 
@@ -119,21 +140,63 @@ if (!$tablesExist) {
     }
 }
 
-// Liste des tables à vérifier pour les données
-$tables = ['users', 'messages', 'sites', 'affiches', 'identites', 'shootings', 'clients'];
-
-// Vérifier si la base de données est vide
-$total = 0;
-foreach ($tables as $table) {
-    $count = countRecords($conn, $table);
-    $total += $count;
-    if ($count > 0) {
-        echo "   Table '$table': $count enregistrement(s)\n";
+// Vérifier si l'utilisateur admin existe, sinon le créer
+$adminExists = false;
+if (tableExists($conn, 'users')) {
+    $result = $conn->query("SELECT COUNT(*) as count FROM users WHERE username = 'admin'");
+    if ($result) {
+        $row = $result->fetch_assoc();
+        $adminExists = (int)$row['count'] > 0;
+    }
+    
+    if (!$adminExists) {
+        echo "👤 Création de l'utilisateur admin...\n";
+        // Hash bcrypt pour "admin123"
+        $adminPassword = '$2y$10$v5HqkpgEPTXDi2rD0deKCu880i3dEGqq9nJd0j4K4AOF1JODroQv6';
+        $stmt = $conn->prepare("INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)");
+        if ($stmt) {
+            $username = 'admin';
+            $email = 'admin@orume.com';
+            $role = 'admin';
+            $stmt->bind_param("ssss", $username, $email, $adminPassword, $role);
+            if ($stmt->execute()) {
+                echo "✅ Utilisateur admin créé avec succès\n";
+                echo "   Username: admin\n";
+                echo "   Password: admin123\n";
+            } else {
+                echo "⚠️  Erreur lors de la création de l'admin: " . $stmt->error . "\n";
+            }
+            $stmt->close();
+        }
+    } else {
+        echo "✅ Utilisateur admin existe déjà\n";
     }
 }
 
-if ($total === 0) {
-    echo "📦 La base de données est vide, exécution du seeder...\n";
+// Liste des tables de données à vérifier (sans users car l'admin peut déjà exister)
+$dataTables = ['messages', 'sites', 'affiches', 'identites', 'shootings'];
+
+// Vérifier si les tables de données sont vides
+$totalData = 0;
+$hasData = false;
+foreach ($dataTables as $table) {
+    $count = countRecords($conn, $table);
+    if ($count > 0) {
+        $hasData = true;
+        echo "   Table '$table': $count enregistrement(s)\n";
+    }
+    $totalData += $count;
+}
+
+// Vérifier aussi la table clients (optionnelle)
+$clientsCount = countRecords($conn, 'clients');
+if ($clientsCount > 0) {
+    echo "   Table 'clients': $clientsCount enregistrement(s)\n";
+    $totalData += $clientsCount;
+}
+
+if (!$hasData || $totalData === 0) {
+    echo "📦 Les tables de données sont vides, exécution du seeder...\n";
     
     // Exécuter le fichier seed.sql
     $seedFile = __DIR__ . '/seed.sql';
@@ -143,13 +206,20 @@ if ($total === 0) {
         
         // Afficher le nombre d'enregistrements après le seed
         $newTotal = 0;
-        foreach ($tables as $table) {
+        foreach ($dataTables as $table) {
             $count = countRecords($conn, $table);
             $newTotal += $count;
             if ($count > 0) {
                 echo "   ✓ Table '$table': $count enregistrement(s)\n";
             }
         }
+        
+        $clientsCountAfter = countRecords($conn, 'clients');
+        if ($clientsCountAfter > 0) {
+            echo "   ✓ Table 'clients': $clientsCountAfter enregistrement(s)\n";
+            $newTotal += $clientsCountAfter;
+        }
+        
         echo "📊 Total d'enregistrements après seed: $newTotal\n";
     } else {
         echo "❌ Erreur lors de l'exécution du seeder\n";
@@ -157,7 +227,7 @@ if ($total === 0) {
         exit(1);
     }
 } else {
-    echo "ℹ️  La base de données contient déjà des données ($total enregistrements), le seeder ne sera pas exécuté\n";
+    echo "ℹ️  Les tables de données contiennent déjà des données ($totalData enregistrements), le seeder ne sera pas exécuté\n";
 }
 
 $conn->close();
